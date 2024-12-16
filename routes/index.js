@@ -8,9 +8,9 @@ const login = require('../routes/loginPage/login');
 const register = require('../routes/registerPage/register');
 
 router.use('/',home);
-router.use('/',cart);
-router.use('/',profile);
-router.use('/',login);
-router.use('/',register);
+router.use('/cart',cart);
+router.use('/profile',profile);
+router.use('/login',login);
+router.use('/register',register);
 
 module.exports = router;
