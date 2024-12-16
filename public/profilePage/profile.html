@@ -1,11 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(function(){
+            $("#header").load('../header/header.html');
+        })
+    </script>
 </head>
 <body>
-    
+    <div id="header"></div>
+    <div class="col-md-8 justify-content-center mx-auto">
+        <div class="card mb-3 justify-content-center mx-auto">
+          <div class="card-body justify-content-center mx-auto">
+            <div class="row justify-content-end align-items-center mb-2">
+              <div class="col-sm-4 text-end">
+                <h6 class="text-center">שם מלא</h6>
+              </div>
+              <input class="form-control col-sm-9 text-secondary" type="text" id="name">
+            </div>
+            <hr>
+            <div class="row justify-content-end align-items-center mb-2">
+              <div class="col-sm-5 text-end">
+                <h6 class="text-center">דואר אלקטרוני</h6>
+              </div>
+              <input class="form-control col-sm-9 text-secondary" type="email" id="email">
+            </div>
+            <hr>
+            <div class="row justify-content-end align-items-center mb-2">
+              <div class="col-sm-3 text-end">
+                <h6 class="text-center">טלפון</h6>
+              </div>
+              <input class="form-control col-sm-9 text-secondary" type="text" id="phone">
+            </div>
+            <hr>
+            <div class="row justify-content-end align-items-center mb-2">
+              <div class="col-sm-3 text-end">
+                <h6 class="text-center">כיתה</h6>
+              </div>
+              <select class="form-select mb-3 bg-light text-end" aria-label="Default select example" id="class" required>
+                <option disabled selected >:אנא סמן את השכבה שבה אתה לומד</option>
+                <option value="7">ז</option>
+                <option value="8">ח</option>
+                <option value="9">ט</option>
+                <option value="10">י</option>
+                <option value="11">יא</option>
+                <option value="12">יב</option>
+            </select>
+            </div>
+            <hr>
+            <div class="row d-flex justify-content-center">
+              <div class="col-sm-12">
+                <button class="btn btn-success" id="saveButton">שמירה</button>
+                <button class="btn btn-secondary" id="resetButton">איפוס</button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <h6 class="mt-3" id="errorContainer"></h6>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="./profile.js"></script>
 </body>
 </html>

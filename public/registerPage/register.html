@@ -3,9 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link  rel="stylesheet" href="../global.css"></link>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <title>הרשמה</title>
+    <script>
+        $(function(){
+            $("#header").load('../header/header.html');
+        })
+    </script>
 </head>
-<body>
-    
+<body id="registerPage" class="main-bg-color">
+    <div id="header"></div>
+    <div class="container text-center col-md-6" id="window">
+        <div class="row mb-4"><div class="col "><h1  class="main-title"> דף הרשמה</h1></div></div>
+        <div class="row justify-content-center">
+            <div class="border-bottom border-opacity-25 m-1 w-50"></div>
+        </div>
+        <div class="row justify-content-center ">
+            <div id="registerDiv" class="w-75 border border-3 border-secondary rounded-3 p-3 border-opacity-25 secondary-bg">
+                <form id="registerForm">
+                    <input type="text" class="form-control mb-3 bg-light text-end " id="name" placeholder="שם מלא" required>
+                    <input type="password" class="form-control mb-3 bg-light text-end" id="password" placeholder="סיסמה" required>
+                    <input type="password" class="form-control mb-3 bg-light text-end" id="confirmPassword" placeholder="אשר סיסמה" required>
+                    <select class="form-select mb-3 bg-light text-end" aria-label="Default select example" id="class" required>
+                        <option disabled selected >:אנא סמן את השכבה שבה אתה לומד</option>
+                        <option value="7">ז</option>
+                        <option value="8">ח</option>
+                        <option value="9">ט</option>
+                        <option value="10">י</option>
+                        <option value="11">יא</option>
+                        <option value="12">יב</option>
+                    </select>
+                    <input type="text" class="form-control mb-3 bg-light text-end" id="phone" placeholder="מספר טלפון" required>
+                    <input type="email" class="form-control mb-4 bg-light text-end" id="email" placeholder="כתובת אימייל" required>
+                    <input type="submit" class="btn btn-primary" id="submit">
+                    <div id="loadingSpinners" class="spinner-border text-info" role="status" style="display: none;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="mb-2" id="failMessage" style="color: red;"></div>
+        <!-- <div class="mb-1 paragraph">שכחת את הסיסמה? <a href="/loginSystem/forgetPassword" class="main-href">לחץ כאן</a> כדי לשנות אותה</div> -->
+        <div class="paragraph">כבר יש לך חשבון? <a href="/login" class="main-href">לחץ כאן</a> כדי להתחבר</div>
+    </div>
+    <script src="./register.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

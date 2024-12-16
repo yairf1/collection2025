@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { type } = require('os');
 
 const users = {
     name: {
@@ -13,11 +12,16 @@ const users = {
 
     },
     class: {
-        type: String,
+        type: Number,
         require: true,
 
     },
     phone: {
+        type: String,
+        require: true,
+ 
+    },
+    email: {
         type: String,
         require: true,
  
