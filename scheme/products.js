@@ -1,18 +1,14 @@
 const mongoose = require('mongoose');
 
-const orders = {
+const products = {
     productName: {
         type: String,
         require: true,  
     },
-    color: {
+    colors: {
         type: String,
     },
     price: {
-        type: Number,
-        default:0,
-    },
-    totalPrice: {
         type: Number,
         default:0,
     },
@@ -20,6 +16,10 @@ const orders = {
         type:Array,
         default:[],
     },
+    img: {
+        type: String,
+        default: '#',
+    },
 }
 
-module.exports = mongoose.model('#',orders);
+module.exports = mongoose.model('#',products);
