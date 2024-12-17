@@ -1,18 +1,6 @@
 let form = document.getElementById('loginForm');
 let failTry = document.getElementById('failMessage');
 
-function getCookie(name) {
-    const cookies = document.cookie.split(';');
-    for (let cookie of cookies) {
-      const [cookieName, cookieValue] = cookie.trim().split('=');
-      if (cookieName === name) {
-        return cookieValue;
-      }
-    }
-    return null; 
-  }
-  
-
 form.addEventListener('submit', async(event) => {
     let name = document.getElementById('name').value;
     let password = document.getElementById('password').value;
