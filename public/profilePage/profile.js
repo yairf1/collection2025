@@ -37,6 +37,6 @@ async function updateDetails() {
 
     userName.value = user.name;
     clas.value = user.class;
-    phone.value = phone.phone;
-    email.value = email.email;
+    phone.value = user.phone;
+    email.value = user.email;
 }

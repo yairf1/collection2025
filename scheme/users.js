@@ -26,6 +26,11 @@ const users = {
         require: true,
  
     },
+    isAdmin: {
+        type: Boolean,
+        require: true,
+        default: false,
+    },
 
 }
 
