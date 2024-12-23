@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const users = {
+const users = new mongoose.Schema({
     name: {
         type: String,
         require: true,
@@ -32,6 +32,6 @@ const users = {
         default: false,
     },
 
-}
+})
 
 module.exports = mongoose.model('#',users);

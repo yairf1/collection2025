@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const products = {
+const products = new mongoose.Schema({
     productName: {
         type: String,
         require: true,  
@@ -20,6 +20,6 @@ const products = {
         type: String,
         default: '#',
     },
-}
+})
 
 module.exports = mongoose.model('#',products);

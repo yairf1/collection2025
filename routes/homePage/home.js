@@ -7,4 +7,8 @@ router.get('/',(req,res) => {
     res.sendFile(file);
 })
 
+router.post('/getAllProducts', (req, res) => {
+    
+})
+
 module.exports = router;

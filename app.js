@@ -16,6 +16,10 @@ app.use('/',router);
 // .then(()=>console.log("connected to db"))
 // .catch(err=>console.error(err));
 
+mongoose.connect('mongodb://localhost:27017/')
+.then(()=>console.log("connected to db"))
+.catch(err=>console.error(err));
+
 app.listen(PORT, ()=>{
     console.log("app is listening in port " + PORT)
 })
