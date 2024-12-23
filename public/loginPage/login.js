@@ -15,11 +15,11 @@ form.addEventListener('submit', async(event) => {
         })
         .then(response=>response.json())
         .then(data=>{
-            if(data.flag){
-                window.location.href = data.router;
+            if(data.message == 'login successful'){
+                window.location.href = '/';
             }
             else{
-            failTry.textContent = data.error;
+                failTry.textContent = data.message;
             }
         })
     }catch(err){

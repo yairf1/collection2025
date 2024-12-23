@@ -1,33 +1,42 @@
 const { Router } = require("express");
 const path = require("path");
 const users = require('../../scheme/users');
+const jwt = require('jsonwebtoken');
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+const authenticateToken = require('../middleware/checkAuth');
 const router = Router();
 
-router.get('/',(req,res) => {
-    const file = path.join(__dirname + '../../../public/loginPage/login.html')
-    res.sendFile(file);
-})
+const JWT_SECRET = 'jnojbnojbj64erqogh349ughbn[v9o3q4';
 
-router.post('/checkIfExist',async(req,res) =>{
-    //check in data base
-    const {email, password} = req.body;
+router.get('/', (req, res) => {
+  const file = path.join(__dirname + '../../../public/loginPage/login.html');
+  res.sendFile(file);
+});
 
-    try{
-        const user = await users.findOne({email: email});
+router.post('/checkIfExist', async (req, res) => {
+  const { name, password } = req.body;
 
-        if (user.password == password) {
-            // res.cookie('isLogged', 'true', {maxAge: 1000 * 60 * 60 * 24});
-            // res.cookie('email', user.email, {maxAge: 1000 * 60 * 60 * 24});
-            // res.cookie('firstName', user.firstName, {maxAge: 1000 * 60 * 60 * 24});
-            res.json({flag:true, router:"/"});
-        }else{
-            res.json({flag:false, error:'password inncorrect, try again'});
-        }
+  try {
+    const user = await users.findOne({ name: name });
+    if (user && user.password === password) {
+      const token = jwt.sign({ name: name}, JWT_SECRET, { expiresIn: "1h" });
+
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'Strict',
+        maxAge: 3600000,
+      });
+      console.log('login successful')
+      return res.json({ message: 'login successful', user: { name: user.name} });
     }
-    catch(err){
-        console.error(err);
-        return res.json({flag:false, error:'user not found, try again'});;
-    }
+
+    res.status(401).json({ message: 'Invalid credentials' });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'An error occurred, please try again.' });
+  }
 });
 
 module.exports = router;

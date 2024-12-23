@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const path = require("path");
 const router = Router();
+const users = require('../../scheme/users');
 
 router.get('/',(req,res) => {
     const file = path.join(__dirname + '../../../public/registerPage/register.html')
