@@ -14,21 +14,25 @@ form.addEventListener('submit', async(event) => {
     event.preventDefault();
     
     if (password == confirmPassword) {
-        await fetch('/register/createUser', {
-            method:'Post',
-            Credential:'include',
-            headers:{'Content-Type': 'application/x-www-form-urlencoded'},
-            body:`name=${name}&password=${password}&clas=${clas}&phone=${phone}&email=${email}`
-        })
-        .then(response => response.text())
-        .then((response) => {
-            loadingSpinners.style.display = 'none';
-            if (response == 'user created successfully') {
-                window.location.href = '/login'
-            } else {
-                failTry.textContent = response;
-            }
-        })
+        try{
+            await fetch('/register/createUser', {
+                method:'Post',
+                Credential:'include',
+                headers:{'Content-Type': 'application/x-www-form-urlencoded'},
+                body:`name=${name}&password=${password}&clas=${clas}&phone=${phone}&email=${email}`
+            })
+            .then(response => response.text())
+            .then((response) => {
+                loadingSpinners.style.display = 'none';
+                if (response == 'user created successfully') {
+                    window.location.href = '/login'
+                } else {
+                    failTry.textContent = response;
+                }
+            })
+        }catch(err){
+            console.error(err);
+        }
     } else {
         failTry.textContent = 'סיסמאות אינן זהות, נסה שנית'
     }

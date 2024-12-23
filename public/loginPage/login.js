@@ -6,20 +6,23 @@ form.addEventListener('submit', async(event) => {
     let password = document.getElementById('password').value;
 
     event.preventDefault();
-
-    await fetch('/login/checkIfExist', {
-        method:'Post',
-        Credential:'include',
-        headers:{'Content-Type': 'application/x-www-form-urlencoded'},
-        body:`name=${name}&password=${password}`
-    })
-    .then(response=>response.json())
-    .then(data=>{
-        if(data.flag){
-            window.location.href = data.router;
-        }
-        else{
-          failTry.textContent = data.error;
-        }
-    })
+    try{
+        await fetch('/login/checkIfExist', {
+            method:'Post',
+            Credential:'include',
+            headers:{'Content-Type': 'application/x-www-form-urlencoded'},
+            body:`name=${name}&password=${password}`
+        })
+        .then(response=>response.json())
+        .then(data=>{
+            if(data.flag){
+                window.location.href = data.router;
+            }
+            else{
+            failTry.textContent = data.error;
+            }
+        })
+    }catch(err){
+        console.error(err);
+    }
 })

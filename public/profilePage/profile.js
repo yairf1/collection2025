@@ -12,13 +12,17 @@ saveButton.addEventListener('click', async (event) => {
 
     event.preventDefault();
 
-    let response = await fetch('/profile/updateUserDetails', {
-        method: 'Post',
-        credentials: 'include',
-        headers:{'content-Type': 'application/x-www-form-urlencoded'},
-        body:`name=${userName.value}&class=${clas.value}&phone=${phone.value}&email=${email.value}`,
-    }).then(response => response.text())
-
+    try{
+        let response = await fetch('/profile/updateUserDetails', {
+            method: 'Post',
+            credentials: 'include',
+            headers:{'content-Type': 'application/x-www-form-urlencoded'},
+            body:`name=${userName.value}&class=${clas.value}&phone=${phone.value}&email=${email.value}`,
+        }).then(response => response.text())
+    }catch(err){
+        console.error(err);
+    }
+    
     await updateDetails();
 })
 
@@ -28,15 +32,20 @@ resetButton.addEventListener('click', async (event) => {
 })
 
 async function updateDetails() {
-    let user = await fetch('/profile/getUserDetails', {
-        method: 'Get',
-        Credentials:'include',
-        headers:{'Content-Type': 'application/x-www-form-urlencoded'},
-    })
-    .then(response => response.json())
+    try{
+        let user = await fetch('/profile/getUserDetails', {
+            method: 'Get',
+            Credentials:'include',
+            headers:{'Content-Type': 'application/x-www-form-urlencoded'},
+        })
+        .then(response => response.json())
 
-    userName.value = user.name;
-    clas.value = user.class;
-    phone.value = user.phone;
-    email.value = user.email;
+        userName.value = user.name;
+        clas.value = user.class;
+        phone.value = user.phone;
+        email.value = user.email;
+    }catch(err){
+        console.error(err);
+    }
+
 }
