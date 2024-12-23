@@ -27,6 +27,16 @@ router.get('/getUserDetails', authenticateToken, async (req, res) => {
 
 router.post('/updateUserDetails', authenticateToken, (req, res) => {
     const { name, clas, phone, email } = req.body;
+
+    if (!name || !clas || !phone || !email) {
+        return res.status(400).json({ message: 'All fields are required' });
+    }
+    try {
+        users.updateOne({name: req.user.name}, {name: name, class: clas, phone: phone, email: email});
+        res.send('user updated successfully');
+    } catch (error) {
+        console.error(error); 
+    }
   });
 
 // function authenticateToken(req, res, next) {

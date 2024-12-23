@@ -2,12 +2,13 @@ const { Router } = require("express");
 const path = require("path");
 const users = require('../../scheme/users');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const authenticateToken = require('../middleware/checkAuth');
 const router = Router();
 
-const JWT_SECRET = 'jnojbnojbj64erqogh349ughbn[v9o3q4';
+const JWT_SECRET = process.env.SECERET_KEY;  
 
 router.get('/', (req, res) => {
   const file = path.join(__dirname + '../../../public/loginPage/login.html');
