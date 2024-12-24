@@ -29,7 +29,6 @@ router.post('/checkIfExist', async (req, res) => {
         sameSite: 'Strict',
         maxAge: 3600000,
       });
-      console.log('login successful')
       return res.json({ message: 'login successful', user: { name: user.name} });
     }
 

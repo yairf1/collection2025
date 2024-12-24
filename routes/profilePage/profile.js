@@ -18,7 +18,6 @@ router.get('/',(req,res) => {
 router.get('/getUserDetails', authenticateToken, async (req, res) => {
     try{
         let loggedUser = await users.findOne({name: req.user.name});
-        console.log(loggedUser);
         res.json({name: loggedUser.name, clas: loggedUser.class, phone: loggedUser.phone, email: loggedUser.email});
     }catch(err){
         console.error(err);

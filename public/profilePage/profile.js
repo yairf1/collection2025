@@ -39,8 +39,6 @@ async function updateDetails() {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         }).then(response => response.json())
         .then(user => {
-            console.log(user);
-            console.log(user.name);
             userName.value = user.name;
             clas.value = user.clas;
             phone.value = user.phone;

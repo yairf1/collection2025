@@ -1,33 +1,53 @@
-function getCookie(name) {
-    const cookies = document.cookie.split(';');
-    for (let cookie of cookies) {
-      const [cookieName, cookieValue] = cookie.trim().split('=');
-      if (cookieName === name) {
-        return cookieValue;
-      }
-    }
-    return null;
+updateUI();
+
+async function isLogged() {
+  try {
+    const response = await fetch('/checkAuth', {
+      method: 'GET',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    });
+    const text = await response.text();
+    return text === 'user logged';
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
 }
 
-let login = document.getElementById('login');
-let register = document.getElementById('register');
-let logout = document.getElementById('logout');
+async function updateUI() {
+  const login = document.getElementById('login');
+  const register = document.getElementById('register');
+  const logout = document.getElementById('logout');
 
-if (getCookie('isLogged')) {
+  if (await isLogged()) {
     login.textContent = '';
-    logout.textContent= 'התנתקות';
+    register.textContent = '';
+    logout.textContent = 'התנתקות';
     login.setAttribute('href', '#');
-    logout.setAttribute('href', '/login');
-    register.textContent = "";
-} else {
+    logout.setAttribute('onClick', 'logout()');
+  } else {
     login.textContent = 'התחברות';
     login.setAttribute('href', '/login');
     register.textContent = 'הרשמה';
     register.setAttribute('href', '/register');
-}
+  }
+};
 
-function logOut(){
-  document.cookie = "email=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-  document.cookie = "isLogged=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-  document.cookie = "firstName=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+async function logout() {
+  try {
+    const response = await fetch('/logout', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    });
+    const result = await response.json();
+    if (result.message === 'logged out successfully') {
+      window.location.href = '/login';
+    } else {
+      console.log(result.message);
+    }
+  } catch (error) {
+    console.error(error);
+  }
 }
