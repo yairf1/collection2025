@@ -6,18 +6,13 @@ function authenticateToken(req, res, next) {
   const token = req.cookies.token;
 
   if (!token) {
-    console.log('no token');
-    
-    return res.status(401).redirect('/login');
+    return res.status(401).redirect('/error');
   }
 
   jwt.verify(token, JWT_SECRET, (err, user) => {
     if (err) {
-      console.log('invalid token');
-      
-      return res.status(403).redirect('/login');
+      return res.status(403).redirect('/error');
     }
-    console.log('valid token');
     req.user = user; 
     next();
   });

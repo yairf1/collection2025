@@ -17,7 +17,6 @@ router.get('/',(req,res) => {
 })
 
 router.get('/checkAuth', authenticateToken, (req,res) => {
-    console.log('user logged in');
     res.send('user logged');
 })
 
@@ -28,9 +27,7 @@ router.post('/logout', (req, res) => {
       sameSite: 'Strict',
       maxAge: 0,  
       path: '/'    
-    });
-    console.log('logging out');
-    
+    });    
     res.json({ message: 'logged out successfully' });
 });
   

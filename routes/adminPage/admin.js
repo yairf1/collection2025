@@ -8,7 +8,6 @@ const router = Router();
 
 router.use('/', authenticateToken, async (req, res, next) => {
     const user = await users.findOne({name: req.user.name});; 
-    console.log(user);
     if (user && user.isAdmin){
         next();
     } else {
@@ -27,7 +26,6 @@ router.post('/createProduct', async(req,res) => {
         try{
             console.log(colors, sizes);
             await products.create({productName: name, colors: colors.split(',').map(item => item.trim()), price: price, sizes: sizes.split(',').map(item => item.trim())});
-            console.log('product created successfuly');
             return res.send('product created successfully');
         }
         catch(err){
