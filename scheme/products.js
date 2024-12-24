@@ -6,11 +6,13 @@ const products = new mongoose.Schema({
         require: true,  
     },
     colors: {
-        type: String,
+        type: Array,
+        default:[],
     },
     price: {
         type: Number,
         default:0,
+        require: true,
     },
     sizes: {
         type:Array,

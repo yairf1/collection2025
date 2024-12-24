@@ -3,9 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <title>admin</title>
+    <script>
+        $(function(){
+            $("#header").load('../header/header.html');
+        })
+    </script>
 </head>
 <body>
-    
-    <script src="./admin.js"></script>
+    <div id="header"></div>
+    <div class="container text-center col-md-6" id="window">
+        <div class="row mb-4"><div class="col "><h1  class="main-title">הוספת מוצר</h1></div></div>
+        <div class="row justify-content-center">
+            <div class="border-bottom border-opacity-25 m-1 w-50"></div>
+        </div>
+        <div class="row justify-content-center ">
+            <div id="registerDiv" class="w-75 border border-3 border-secondary rounded-3 p-3 border-opacity-25 secondary-bg">
+                <form id="registerForm">
+                    <input type="text" class="form-control mb-3 bg-light text-end " id="name" placeholder="שם מוצר" required>
+                    <input type="text" class="form-control mb-3 bg-light text-end" id="colors" placeholder="צבעים" required>
+                    <input type="text" class="form-control mb-3 bg-light text-end" id="price" placeholder="מחיר" required>
+                    <input type="text" class="form-control mb-3 bg-light text-end" id="sizes" placeholder="מידות" required>
+                    <input type="text" class="form-control mb-4 bg-light text-end" id="img" placeholder="תמונה">
+                    <input type="submit" class="btn btn-primary" id="submit">
+                    <div id="loadingSpinners" class="spinner-border text-info" role="status" style="display: none;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </form>
+            </div>
+            <div class="mb-2" id="failMessage" style="color: red;"></div>
+        </div>
+    </div>
+
+    <script src="../adminPage/admin.js"></script>
 </body>
 </html>

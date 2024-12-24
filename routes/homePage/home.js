@@ -3,11 +3,13 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const router = Router();
+const products = require('../../scheme/products');
 const authenticateToken = require('../middleware/checkAuth');
 const { STATUS_CODES } = require("http");
 
 router.use(cookieParser());
 router.use(bodyParser.json());
+// router.use(authenticateToken);
 
 router.get('/',(req,res) => {
     const file = path.join(__dirname + '../../../public/homePage/home.html')
@@ -33,8 +35,13 @@ router.post('/logout', (req, res) => {
 });
   
   
-router.post('/getAllProducts', (req, res) => {
-    
+router.post('/getAllProducts', async (req, res) => {
+    try {
+        let productsList = await products.find();
+        res,json(productsList);
+    } catch (error) {
+        console.error(error);
+    }
 })
 
 module.exports = router;
