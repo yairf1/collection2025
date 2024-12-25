@@ -44,14 +44,14 @@ function App() {
 
     return (
         <div className="row">
-            {products.map((product, index) => (
+            {products.map((product, index) => {
                 <Card 
                     key={index}
                     img={product.img}
                     productName={product.productName}
                     price={product.price}
                 />
-            ))}
+            })}
         </div>
     );
 }

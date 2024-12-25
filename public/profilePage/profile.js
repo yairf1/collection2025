@@ -16,9 +16,8 @@ saveButton.addEventListener('click', async (event) => {
             method: 'POST',  
             credentials: 'include', 
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `name=${userName.value}&class=${clas.value}&phone=${phone.value}&email=${email.value}`,
-        });
-        await response.text();
+            body: `name=${userName.value}&clas=${clas.value}&phone=${phone.value}&email=${email.value}`,
+        }).then(response => response.json());
     } catch (err) {
         console.error(err);
     }

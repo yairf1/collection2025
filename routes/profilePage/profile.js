@@ -6,6 +6,8 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const authenticateToken = require('../middleware/checkAuth');
 const router = Router();
+const JWT_SECRET = process.env.SECERET_KEY;  
+
 
 router.use(cookieParser());
 router.use(bodyParser.json());
@@ -24,14 +26,33 @@ router.get('/getUserDetails', authenticateToken, async (req, res) => {
     }
 });
 
-router.post('/updateUserDetails', authenticateToken, (req, res) => {
+router.post('/updateUserDetails', authenticateToken, async (req, res) => {
     const { name, clas, phone, email } = req.body;
-
+    console.log('check', name, clas, phone, email);
+    
     if (!name || !clas || !phone || !email) {
+        console.log('failed');
         return res.status(400).json({ message: 'All fields are required' });
     }
     try {
-        users.updateOne({name: req.user.name}, {name: name, class: clas, phone: phone, email: email});
+        await users.updateOne({name: req.user.name}, {name: name, class: clas, phone: phone, email: email});
+        // claen old cookie with old user name
+        res.clearCookie('token', {
+            httpOnly: true,  
+            secure: false,   
+            sameSite: 'Strict',
+            maxAge: 0,  
+            path: '/'    
+        });
+        // create new cookie with updated user name
+        const token = jwt.sign({name: name}, JWT_SECRET, { expiresIn: "1h" });
+        res.cookie('token', token, {
+          httpOnly: true,
+          secure: false,
+          sameSite: 'Strict',
+          maxAge: 3600000,
+        });
+        console.log('success');
         res.send('user updated successfully');
     } catch (error) {
         console.error(error); 
