@@ -2,6 +2,7 @@ let userName = document.getElementById('name');
 let clas = document.getElementById('class');
 let phone = document.getElementById('phone');
 let email = document.getElementById('email');
+let errorContainer = document.getElementById('errorContainer');
 
 let saveButton = document.getElementById('saveButton');
 let resetButton = document.getElementById('resetButton');
@@ -17,7 +18,15 @@ saveButton.addEventListener('click', async (event) => {
             credentials: 'include', 
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `name=${userName.value}&clas=${clas.value}&phone=${phone.value}&email=${email.value}`,
-        }).then(response => response.json());
+        }).then(response => response.json())
+        .then(response => {
+            if (response.message === 'user updated successfully') {
+                alert('עקב שינוי הפרטים יש להתחבר מחדש בשביל לוודא את זהות המשתמש');
+                window.location.href = '/login';
+            } else {
+                errorContainer.value = 'חלה שגיאה, אנא ודא שמילאת את כל השדות, ואם כן נסה שוב מאוחר יותר';
+            }
+        });
     } catch (err) {
         console.error(err);
     }

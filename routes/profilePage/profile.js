@@ -28,10 +28,8 @@ router.get('/getUserDetails', authenticateToken, async (req, res) => {
 
 router.post('/updateUserDetails', authenticateToken, async (req, res) => {
     const { name, clas, phone, email } = req.body;
-    console.log('check', name, clas, phone, email);
     
     if (!name || !clas || !phone || !email) {
-        console.log('failed');
         return res.status(400).json({ message: 'All fields are required' });
     }
     try {
@@ -45,15 +43,14 @@ router.post('/updateUserDetails', authenticateToken, async (req, res) => {
             path: '/'    
         });
         // create new cookie with updated user name
-        const token = jwt.sign({name: name}, JWT_SECRET, { expiresIn: "1h" });
-        res.cookie('token', token, {
-          httpOnly: true,
-          secure: false,
-          sameSite: 'Strict',
-          maxAge: 3600000,
-        });
-        console.log('success');
-        res.send('user updated successfully');
+        // const token = jwt.sign({name: name}, JWT_SECRET, { expiresIn: "1h" });
+        // res.cookie('token', token, {
+        //   httpOnly: true,
+        //   secure: false,
+        //   sameSite: 'Strict',
+        //   maxAge: 3600000,
+        // });
+        res.json({message: 'user updated successfully'});
     } catch (error) {
         console.error(error); 
     }

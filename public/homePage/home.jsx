@@ -20,6 +20,11 @@ function Card({ img, productName, price }) {
                         {price}
                     </div>
                 </div>
+                <div className="row justify-content-end align-items-center mb-2">
+                    <button className=" col-sm-4 text-end" id="addToCart">
+                        הוסף לעגלה
+                    </button>
+                </div>
             </div>
         </div>
     );
