@@ -12,7 +12,7 @@ const JWT_SECRET = process.env.SECERET_KEY;
 router.use(cookieParser());
 router.use(bodyParser.json());
 
-router.get('/',(req,res) => {
+router.get('/', authenticateToken, (req,res) => {
     const file = path.join(__dirname + '../../../public/profilePage/profile.html')
     res.sendFile(file);
 })

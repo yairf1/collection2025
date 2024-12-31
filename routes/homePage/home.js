@@ -35,7 +35,7 @@ router.post('/logout', (req, res) => {
 router.post('/getAllProducts', async (req, res) => {
     try {
         let productsList = await products.find();
-        res,json(productsList);
+        res.json(productsList);
     } catch (error) {
         console.error(error);
     }

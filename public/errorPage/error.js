@@ -6,7 +6,7 @@ async function isLogged() {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     });
     const text = await response.text();
-    return text === 'user logged';
+    return text === 'user logged' ? true : false;
   } catch (error) {
     console.error(error);
     return false;

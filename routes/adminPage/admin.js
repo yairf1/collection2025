@@ -24,7 +24,6 @@ router.post('/createProduct', async(req,res) => {
     const {name, colors, price, sizes} = req.body;
     if (name && colors && price && sizes){
         try{
-            console.log(colors, sizes);
             await products.create({productName: name, colors: colors.split(',').map(item => item.trim()), price: price, sizes: sizes.split(',').map(item => item.trim())});
             return res.send('product created successfully');
         }
