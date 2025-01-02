@@ -1,3 +1,5 @@
+updateUI();
+
 async function isLogged() {
   try {
     const response = await fetch('/checkAuth', {
@@ -12,10 +14,12 @@ async function isLogged() {
     return false;
   }
 }
-    
-let loginMessage = document.getElementById('loginMessage');
-if (isLogged()) {
-    loginMessage.style.display = 'none';
-}else{
-    loginMessage.style.display = 'block';
+
+async function updateUI() {
+    let loginMessage = document.getElementById('loginMessage');
+    if (await isLogged()) {
+        loginMessage.style.display = 'none';
+    }else{
+        loginMessage.style.display = 'block';
+    }
 }

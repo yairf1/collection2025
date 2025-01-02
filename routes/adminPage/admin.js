@@ -18,7 +18,7 @@ router.use('/', authenticateToken, async (req, res, next) => {
 router.get('/',(req,res) => {
     const file = path.join(__dirname + '../../../public/adminPage/admin.html');
     res.sendFile(file);
-})
+});
 
 router.post('/createProduct', async(req,res) => {
     const {name, colors, price, sizes} = req.body;
@@ -32,6 +32,6 @@ router.post('/createProduct', async(req,res) => {
             return res.send('something went wrong, try again');
         }
     }
-})
+});
 
 module.exports = router;

@@ -1,21 +1,19 @@
-// const exampleModal = document.getElementById('exampleModal')
-// if (exampleModal) {
-//   exampleModal.addEventListener('show.bs.modal', event => {
-//     // Button that triggered the modal
-//     const button = event.relatedTarget
-//     // Extract info from data-bs-* attributes
-//     const recipient = button.getAttribute('data-bs-whatever')
-//     // If necessary, you could initiate an Ajax request here
-//     // and then do the updating in a callback.
+const addToCartModal = document.getElementById('addToCartModal');
+const failMessage = document.getElementById('failMessage');
+const addToCartForm = document.getElementById('addToCartForm');
 
-//     // Update the modal's content.
-//     const modalTitle = exampleModal.querySelector('.modal-title')
-//     const modalBodyInput = exampleModal.querySelector('.modal-body input')
-
-//     modalTitle.textContent = `New message to ${recipient}`
-//     modalBodyInput.value = recipient
-//   })
-// }
+if (addToCartModal) {
+  addToCartModal.addEventListener('show.bs.modal', event => {
+    const button = event.relatedTarget;
+    const productName = button.getAttribute('data-bs-product');
+    const price = button.getAttribute('data-bs-price');
+    addToCartModal.removeAttribute('aria-hidden')
+    updateModal(productName, price);
+  });
+  addToCartModal.addEventListener('hide.bs.modal', event => {
+    addToCartModal.setAttribute('aria-hidden', 'true');
+  });
+}
 
 function Card({ img, productName, price }) {
   return `
@@ -32,7 +30,7 @@ function Card({ img, productName, price }) {
             מחיר: ${price} ש"ח
           </div>
           <div>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="${productName}">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addToCartModal" data-bs-product="${productName}" data-bs-price="${price}">
               הוסף לעגלה
             </button>
           </div>
@@ -70,6 +68,76 @@ async function App() {
 
   return `<div class="row g-3">${productCards.join('')}</div>`;
 }
+
+async function updateModal(productName, price) {
+  //getting the product with dats-bs-product
+
+  let response = await fetch('/getProductDetails', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `productName=${productName}`,
+}).then(response => response.json());
+
+let product = response;
+
+  addToCartModal.querySelector('#productNameInput').value = product.productName;
+  if (product.colors.length > 0) {
+    const colorSelect = addToCartModal.querySelector('#colorSelect');
+    colorSelect.innerHTML = '';
+    product.colors.forEach((color) => {
+      const option = document.createElement('option');
+      option.value = color;
+      option.textContent = color;
+      colorSelect.appendChild(option);
+    });
+  }
+
+  if (product.sizes.length > 0) {
+    const sizeSelect = addToCartModal.querySelector('#sizeSelect');
+    sizeSelect.innerHTML = '';
+    product.sizes.forEach((size) => {
+      const option = document.createElement('option');
+      option.value = size;
+      option.textContent = size;
+      sizeSelect.appendChild(option);
+    });
+    
+  }
+  const modalTitle = addToCartModal.querySelector('#modalLabel');
+  const productNameInput = addToCartModal.querySelector('#productNameInput');
+  const priceInput = addToCartModal.querySelector('#priceInput');
+
+  modalTitle.textContent = `המוצר שנבחר הוא ${productName}`;
+  productNameInput.value = productName;
+  priceInput.value = price;
+};
+
+addToCartForm.addEventListener('submit', async (event) => {
+  event.preventDefault(); 
+
+  const form = event.target;
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData.entries());
+
+  try {
+     const response = await fetch(form.action, {
+         method: form.method,
+         headers: {
+             'Content-Type': 'application/json',
+         },
+         body: JSON.stringify(data),
+     });
+     const result = await response.json();
+     console.log(response.message);
+     
+     if (response.message === 'something went wrong') {
+         failMessage.textContent = 'משהו השתבש, נסה שוב מאוחר יותר';
+     } 
+  } catch (error) {
+      failMessage.textContent = 'משהו השתבש, נסה שוב מאוחר יותר';
+      console.error(error);
+  }
+});
 
 
 App().then((html) => {

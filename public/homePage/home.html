@@ -15,32 +15,38 @@
 <body>
     <div id="header"></div>
     <div class="container text-container">
-        <div class="row" id="root">
-            <div className="card-body justify-content-center mx-auto"></div>
-        </div>
-        <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="row" id="root"></div>
+        <div class="modal fade" id="addToCartModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="exampleModalLabel">הוספה לעגלה</h1>
+                  <h2 class="modal-title fs-5" id="modalLabel"></h2>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                  <form>
+                <form action="/addToCart" method="POST" id="addToCartForm">
+                  <div class="modal-body">
+                    <input type="hidden" id="productNameInput" name="productName">
+                    <input type="hidden" id="priceInput" name="price">
                     <div class="mb-3">
-                      <label for="recipient-name" class="col-form-label">בחר צבע</label>
-                      <input type="" class="form-control" id="recipient-name">
+                      <select class="form-select" aria-label="select color" id="colorSelect" name="color">
+                        <option disabled>בחר צבע</option>
+                      </select>
                     </div>
                     <div class="mb-3">
-                      <label for="message-text" class="col-form-label">Message:</label>
-                      <textarea class="form-control" id="message-text"></textarea>
+                      <select class="form-select" aria-label="select size" id="sizeSelect" name="size">
+                        <option disabled>בחר מידה</option>
+                      </select>
                     </div>
-                  </form>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary">Send message</button>
-                </div>
+                    <div class="mb-3">
+                      <input type="number" class="form-control" id="quantity" name="quantity" placeholder="כמות" required>
+                    </div>
+                  </div>
+                  <div class="mb-2" id="failMessage" style="color: red;"></div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">סגור</button>
+                    <input type="submit" class="btn btn-primary" id="addToCartButton" placeholder="הןספה לעגלה"/>
+                  </div>
+                </form>
               </div>
             </div>
         </div>

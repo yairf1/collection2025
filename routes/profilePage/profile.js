@@ -11,13 +11,14 @@ const JWT_SECRET = process.env.SECERET_KEY;
 
 router.use(cookieParser());
 router.use(bodyParser.json());
+router.use(authenticateToken);
 
-router.get('/', authenticateToken, (req,res) => {
+router.get('/', (req,res) => {
     const file = path.join(__dirname + '../../../public/profilePage/profile.html')
     res.sendFile(file);
 })
 
-router.get('/getUserDetails', authenticateToken, async (req, res) => {
+router.get('/getUserDetails', async (req, res) => {
     try{
         let loggedUser = await users.findOne({name: req.user.name});
         res.json({name: loggedUser.name, clas: loggedUser.class, phone: loggedUser.phone, email: loggedUser.email});
@@ -26,7 +27,7 @@ router.get('/getUserDetails', authenticateToken, async (req, res) => {
     }
 });
 
-router.post('/updateUserDetails', authenticateToken, async (req, res) => {
+router.post('/updateUserDetails', async (req, res) => {
     const { name, clas, phone, email } = req.body;
     
     if (!name || !clas || !phone || !email) {
@@ -54,19 +55,6 @@ router.post('/updateUserDetails', authenticateToken, async (req, res) => {
     } catch (error) {
         console.error(error); 
     }
-  });
-
-// function authenticateToken(req, res, next) {
-//     const token = req.cookies.token;
-  
-//     if (!token) return res.status(401).json({ message: 'Not logged in' });
-  
-//     jwt.verify(token, JWT_SECRET, (err, user) => {
-//       if (err) return res.status(403).json({ message: 'Invalid or expired token' });
-  
-//       req.user = user;
-//       next();
-//     });
-// }
+});
   
 module.exports = router;

@@ -17,8 +17,6 @@ const orderSchema = new mongoose.Schema({
             },
             size: {
                 type: String,
-                default: '',
-                required: true,
             },
             quantity: {
                 type: Number,
@@ -35,6 +33,10 @@ const orderSchema = new mongoose.Schema({
         type:String,
         required: true,
     },
+    isConfirmed:{
+        type: Boolean,
+        default: false,
+    }
 });
 
 module.exports = mongoose.model('orders', orderSchema);
