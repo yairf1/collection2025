@@ -33,7 +33,14 @@ const orderSchema = new mongoose.Schema({
         type:String,
         required: true,
     },
+    orderId: {
+        type:String,
+    },
     isConfirmed:{
+        type: Boolean,
+        default: false,
+    },
+    isPayed:{
         type: Boolean,
         default: false,
     }

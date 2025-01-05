@@ -13,8 +13,34 @@
 </head>
 <body>
     <div id="header"></div>
-    <div>cart</div>
-    
+    <div class="modal fade" id="confirmRemoveModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">              
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">מחיקת הזמנה </h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>?האם אתה בטוח שברצונך למחוק את ההזמנה </p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="buttonfalse">סגור</button>
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="buttonTrue">מחק הזמנה </button>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div id="root"></div>
+    <div class="row"><div class="col-3 mx-auto" id="totalPriceDiv"></div></div>
+    <div class="row"><div class="col-3 mx-auto" id="failMessage"></div></div>
+    <div class="row">
+      <div class="col-3 ms-auto">
+        <button class="btn btn-outline-danger" type="button" id="removeOrderButton">מחק הזמנה</button>
+      </div>
+      <div class="col-3 me-auto">
+        <button class="btn btn-outline-success" type="button" id="confirmOrderButton">אשר הזמנה</button>
+      </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="../cartPage/cart.js"></script>
 </body>

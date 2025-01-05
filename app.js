@@ -5,14 +5,14 @@ const router = require('./routes/index')
 const path = require('path'); 
 const app = express();
 const PORT = 3003;
-
+require('dotenv').config();
 
 app.use(express.static('public'));
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 app.use('/',router);
 
-// mongoose.connect(process.env.MONGODB_CONNECTION_STRING)
+// mongoose.connect(process.env.MONGODB_URI)
 // .then(()=>console.log("connected to db"))
 // .catch(err=>console.error(err));
 

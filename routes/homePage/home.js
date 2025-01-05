@@ -53,20 +53,20 @@ router.post('/getProductDetails', async (req, res) => {
 router.post('/addToCart', authenticateToken, async (req, res) => {
     const { productName, price, color, size, quantity } = req.body;
     if(!productName || !color || !size || !quantity){
-        return res.status(400).json({message: 'All fields are required'});
+        return res.status(400).json({message: 'all fields are required'});
+    }
+    if(quantity <= 0 || isNaN(quantity)){
+        return res.status(400).json({message: 'quantity must be more than 0'});
     }
     // search if client have existing order and open new one if he havent
     try {
         let order = await orders.findOne({customerName: req.user.name});
 
         if(!order){
-            console.log('no order found, creating');
-            
             await orders.create({products: {productName: productName, color: color, price: price, size: size, quantity: quantity}, customerName: req.user.name});
             return res.json({message: 'product added to cart succsessfully'});
         }
 
-        console.log('updating existing order');
         order = await orders.updateOne(
             {customerName: req.user.name}, 
             {$push: {products: [{productName: productName, price: price, quantity: quantity, color: color, size: size}]}},
@@ -76,7 +76,7 @@ router.post('/addToCart', authenticateToken, async (req, res) => {
         }
         return res.json({message: 'product added to cart succsessfully'});
     }catch(error){
-        console.log(error);
+        console.error(error);
         return res.json({message: 'something went wrong'});
     }
 });
