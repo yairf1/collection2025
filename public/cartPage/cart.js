@@ -2,9 +2,27 @@ let totalPriceDiv = document.getElementById('totalPriceDiv');
 let failMessage = document.getElementById('failMessage');
 let confirmOrderButton = document.getElementById('confirmOrderButton');
 let removeOrderButton = document.getElementById('removeOrderButton');
+let confirmationMessage = document.getElementById('confirmationMessage');
 
 App().then((html) => {
     document.getElementById('root').innerHTML = html;
+});
+
+confirmOrderButton.addEventListener('click', async () => {
+    try {
+        const response = await fetch('cart/confirmOrder', {method: 'POST',})
+        result = await response.json();
+        if (result.message === 'order confirmed') {
+            confirmOrderButton.style.display = 'none';
+            confirmationMessage.style.display = 'block';
+            confirmationMessage.textContent = result.orderId + '  ' + ':הזמנה אושרה, קוד ההזמנה הוא' ;
+        } else {
+            failMessage.style.color = 'red';
+            failMessage.textContent = 'משהו השתבש, נסה שוב מאוחר יותר';
+        }
+    } catch (error) {
+        console.error(error);
+    }
 });
 
 removeOrderButton.addEventListener('click', async () => {
@@ -12,6 +30,8 @@ removeOrderButton.addEventListener('click', async () => {
         const response = await fetch('cart/removeOrder', {method: 'DELETE',})
         result = await response.json();
         if (result.message === 'order removed') {
+            confirmationMessage.style.display = 'none';
+            confirmationMessage.textContent = '';
             failMessage.style.color = 'green';
             failMessage.textContent = 'ההזמנה הוסרה בהצלחה';
         } else {
@@ -58,7 +78,14 @@ async function App() {
     removeOrderButton.style.display = 'block';
     totalPriceDiv.style.display = 'block';
     totalPriceDiv.textContent = `סך הכל: ${order.totalPrice} ש"ח`;
-    order.isConfirmed ? confirmOrderButton.style.display = 'none': confirmOrderButton.style.display = 'block';
+    if (order.isConfirmed){
+        confirmOrderButton.style.display = 'none';
+        confirmationMessage.textContent = 'ההזמנה אושרה, מספר ההזמנה שלך הוא:' + order.orderId;
+        confirmationMessage.style.display = 'block';
+    }else{
+        confirmOrderButton.style.display = 'block';
+        confirmationMessage.style.display = 'none';
+    }   
 
     const productCards = await Promise.all(order.products.map(async (product) => {
         counter++;

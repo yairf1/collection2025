@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const router = Router();
 const products = require('../../scheme/products');
 const orders = require('../../scheme/orders');
+const users = require('../../scheme/users');
 const authenticateToken = require('../middleware/checkAuth');
 
 router.get('/', authenticateToken, (req,res) => {
@@ -45,12 +46,15 @@ router.post('/getUserOrder', authenticateToken, async (req, res) => {
 });
 
 router.post('/confirmOrder', authenticateToken, async (req, res) => {
-    const user = req.user;
+    const loggedUser = req.user;
     try {
-        let order = await orders.findOne({customerName: user.name});
+        let order = await orders.findOne({customerName: loggedUser.name});
+        let user = await users.findOne({name: loggedUser.name});
         order.isConfirmed = true;
+        // generate order id
+        order.orderId = generateOrderId(user.class, 6)   
         await order.save();
-        res.json({message: 'order confirmed'});
+        res.json({message: 'order confirmed', orderId: order.orderId});
     } catch (error) {
         console.error(error);
         res.json({message: 'error'});
@@ -89,7 +93,7 @@ router.post('/removeProduct', authenticateToken, async (req, res) => {
         }
         order.products.splice(index, 1);
         await order.save();
-
+        
         res.json({ message: 'order updated' });
     } catch (error) {
         console.error('Error updating order:', error.message);
@@ -97,5 +101,16 @@ router.post('/removeProduct', authenticateToken, async (req, res) => {
     }
 });
 
+function generateOrderId(clas, length) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let orderId;
+
+    orderId = clas + '-';
+    for (let i = 0; i < length; i++) {
+        orderId += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+
+    return orderId;
+}
 
 module.exports = router;
