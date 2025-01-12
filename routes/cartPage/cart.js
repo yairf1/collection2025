@@ -102,7 +102,7 @@ router.post('/removeProduct', authenticateToken, async (req, res) => {
 });
 
 function generateOrderId(clas, length) {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let orderId;
 
     orderId = clas + '-';
