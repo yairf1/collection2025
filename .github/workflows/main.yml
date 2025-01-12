@@ -16,21 +16,20 @@ jobs:
       - name: Build
         run: docker build . --tag ${{ secrets.DOCKER_USERNAME }}/collection2025:latest
 
-      - name: push to DockerHub
+      - name: Push to DockerHub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/collection2025:latest
         
   deploy:
     needs: build
     runs-on: self-hosted
     steps:
-      - name: deploy app
+      - name: Deploy app
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
-          script_stop: true
           script: |
             sudo docker stop collection2025
             sudo docker rm collection2025
