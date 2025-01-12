@@ -35,4 +35,4 @@ jobs:
             sudo docker rm collection2025
             sudo docker rmi yairf11/collection2025
             sudo docker pull yairf11/collection2025
-            sudo docker run --name collection2025 -d -p 80:80 -e MONGODB_CONNECTION_STRING="${{ secrets.MONGODB_CONNECTION_STRING }}" yairf11/collection2025
+            sudo docker run --name collection2025 -d -p 80:3000 -e MONGODB_CONNECTION_STRING="${{ secrets.MONGODB_CONNECTION_STRING }}" yairf11/collection2025
