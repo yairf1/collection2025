@@ -23,16 +23,22 @@ jobs:
     needs: build
     runs-on: self-hosted
     steps:
-      - name: Deploy app
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USER }}
-          key: ${{ secrets.PRIVATE_KEY }}
-          port: ${{ secrets.PORT }}
-          script: |
-            sudo docker stop collection2025
-            sudo docker rm collection2025
-            sudo docker rmi yairf11/collection2025
-            sudo docker pull yairf11/collection2025
-            sudo docker run --name collection2025 -d -p 80:3000 -e MONGODB_CONNECTION_STRING="${{ secrets.MONGODB_CONNECTION_STRING }}" yairf11/collection2025
+      - name: pull image from docker
+        run: docker pull yairf11/collection2025:latest
+      - name: delete old container
+        run: docker rm -f yairf11/collection2025-container
+      - name: run docker container
+        run: docker run -d -p 80:3000 -name collection2025-container -e MONGODB_CONNECTION_STRING="${{ secrets.MONGODB_CONNECTION_STRING }}" yairf11/collection2025
+      # - name: Deploy app
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{ secrets.HOST }}
+      #     username: ${{ secrets.USER }}
+      #     key: ${{ secrets.PRIVATE_KEY }}
+      #     port: ${{ secrets.PORT }}
+      #     script: |
+      #       sudo docker stop collection2025
+      #       sudo docker rm collection2025
+      #       sudo docker rmi yairf11/collection2025
+      #       sudo docker pull yairf11/collection2025
+      #       sudo docker run --name collection2025 -d -p 80:3000 -e MONGODB_CONNECTION_STRING="${{ secrets.MONGODB_CONNECTION_STRING }}" yairf11/collection2025
