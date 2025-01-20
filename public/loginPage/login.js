@@ -19,10 +19,10 @@ form.addEventListener('submit', async(event) => {
                 window.location.href = '/';
             }
             else{
-                if (message === 'Invalid credentials') { 
+                if (data.message === 'Invalid credentials') { 
                     failTry.textContent = 'שם משתמש או סיסמה שגויים'
                 }
-                else if (message === 'An error occurred, please try again.') { 
+                else if (data.message === 'An error occurred, please try again.') { 
                     failTry.textContent = 'קרתה שגיאה, נסה שנית מאוחר יותר'
                 }
             }
