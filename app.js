@@ -6,7 +6,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 require('dotenv').config()
 const app = express();
-const PORT = 3003;
+const PORT = 3000;
 
 
 app.use(express.static('public'));
