@@ -35,7 +35,7 @@ router.post('/checkIfExist', async (req, res) => {
     res.status(401).json({ message: 'Invalid credentials' });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ error: 'An error occurred, please try again.' });
+    return res.status(500).json({ message: 'An error occurred, please try again.' });
   }
 });
 

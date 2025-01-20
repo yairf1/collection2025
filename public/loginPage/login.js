@@ -19,7 +19,12 @@ form.addEventListener('submit', async(event) => {
                 window.location.href = '/';
             }
             else{
-                failTry.textContent = data.message;
+                if (message === 'Invalid credentials') { 
+                    failTry.textContent = 'שם משתמש או סיסמה שגויים'
+                }
+                else if (message === 'An error occurred, please try again.') { 
+                    failTry.textContent = 'קרתה שגיאה, נסה שנית מאוחר יותר'
+                }
             }
         })
     }catch(err){

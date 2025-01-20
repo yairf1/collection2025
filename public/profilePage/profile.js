@@ -2,7 +2,7 @@ let userName = document.getElementById('name');
 let clas = document.getElementById('class');
 let phone = document.getElementById('phone');
 let email = document.getElementById('email');
-let errorContainer = document.getElementById('errorContainer');
+let failMessage = document.getElementById('failMessage');
 
 let saveButton = document.getElementById('saveButton');
 let resetButton = document.getElementById('resetButton');
@@ -13,7 +13,7 @@ saveButton.addEventListener('click', async (event) => {
     event.preventDefault();
 
     try {
-        let response = await fetch('/profile/updateUserDetails', {
+        await fetch('/profile/updateUserDetails', {
             method: 'POST',  
             credentials: 'include', 
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -24,7 +24,7 @@ saveButton.addEventListener('click', async (event) => {
                 alert('עקב שינוי הפרטים יש להתחבר מחדש בשביל לוודא את זהות המשתמש');
                 window.location.href = '/login';
             } else {
-                errorContainer.value = 'חלה שגיאה, אנא ודא שמילאת את כל השדות, ואם כן נסה שוב מאוחר יותר';
+                failMessage.textContent = 'חלה שגיאה, אנא ודא שמילאת את כל השדות, ואם כן נסה שוב מאוחר יותר';
             }
         });
     } catch (err) {

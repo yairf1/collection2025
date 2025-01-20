@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const authenticateToken = require('../middleware/checkAuth');
 const router = Router();
+const { body, validationResult } = require('express-validator');
 const JWT_SECRET = process.env.SECERET_KEY;  
 
 
@@ -27,7 +28,16 @@ router.get('/getUserDetails', async (req, res) => {
     }
 });
 
-router.post('/updateUserDetails', async (req, res) => {
+router.post('/updateUserDetails', [
+    body('name').notEmpty().withMessage('Username is required'),
+    body('clas').isInt({ min: 7, max: 12 }).withMessage('Clas must be a number between 7 and 12'),
+    body('phone').isMobilePhone('any').withMessage('Phone must be a valid mobile number'),
+    body('email').isEmail().notEmpty().withMessage('Invalid email'),
+], async(req,res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
     const { name, clas, phone, email } = req.body;
     
     if (!name || !clas || !phone || !email) {
@@ -43,17 +53,11 @@ router.post('/updateUserDetails', async (req, res) => {
             maxAge: 0,  
             path: '/'    
         });
-        // create new cookie with updated user name
-        // const token = jwt.sign({name: name}, JWT_SECRET, { expiresIn: "1h" });
-        // res.cookie('token', token, {
-        //   httpOnly: true,
-        //   secure: false,
-        //   sameSite: 'Strict',
-        //   maxAge: 3600000,
-        // });
+
         res.json({message: 'user updated successfully'});
     } catch (error) {
         console.error(error); 
+        return res.status(400).json({ message: 'error' });
     }
 });
   

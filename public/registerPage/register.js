@@ -21,19 +21,20 @@ form.addEventListener('submit', async(event) => {
                 headers:{'Content-Type': 'application/x-www-form-urlencoded'},
                 body:`name=${name}&password=${password}&clas=${clas}&phone=${phone}&email=${email}`
             })
-            .then(response => response.text())
-            .then((response) => {
+            .then(async (response) => {
+                const data = await response.json()
                 loadingSpinners.style.display = 'none';
-                if (response == 'user created successfully') {
+                if (data.message == 'user created successfully') {
                     window.location.href = '/login'
                 } else {
-                    failTry.textContent = response;
+                    failTry.textContent = data.errors[0].msg;
                 }
             })
         }catch(err){
             console.error(err);
         }
     } else {
+        loadingSpinners.style.display = 'none';
         failTry.textContent = 'סיסמאות אינן זהות, נסה שנית'
     }
 });

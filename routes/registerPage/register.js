@@ -1,26 +1,37 @@
 const { Router } = require("express");
 const path = require("path");
-const router = Router();
 const users = require('../../scheme/users');
+require('dotenv').config();
+const router = Router();
+const { body, validationResult } = require('express-validator');
 
 router.get('/',(req,res) => {
     const file = path.join(__dirname + '../../../public/registerPage/register.html')
     res.sendFile(file);
 })
 
-//body:`name=${name}&password=${password}&clas=${clas}&phone=${phone}&email=${email}`
+router.post('/createUser',[
+    body('name').notEmpty().withMessage('Username is required'),
+    body('password').notEmpty().withMessage('Invaild password'),
+    body('clas').isInt({ min: 7, max: 12 }).withMessage('Clas must be a number between 7 and 12'),
+    body('phone').isMobilePhone('any').withMessage('Phone must be a valid mobile number'),
+    body('email').isEmail().notEmpty().withMessage('Invalid email'),
+], async(req,res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
 
-router.post('/createUser', async(req,res) => {
     const {name, password, clas, phone, email} = req.body;
 
     if (name && password && clas && phone && email ) {
         try{
             await users.create({name: name, password: password, class: clas, phone: phone, email: email, registerDate:getCurrentDate()});
-            return res.send('user created successfully');
+            return res.json({message: 'user created successfully'});
         }
         catch(err){
             console.error(err);
-            return res.send('something went wrong, try again');
+            return res.json({message: 'something went wrong, try again'});
         }
     }
 })
