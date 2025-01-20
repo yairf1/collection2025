@@ -24,7 +24,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: stop old container
-        run: sudo docker stop yairf11/collection2025
+        run: sudo docker stop collection2025
       - name: delete old container
         run: sudo docker rm -f yairf11/collection2025
       - name: pull image from docker
