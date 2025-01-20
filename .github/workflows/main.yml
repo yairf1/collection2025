@@ -24,11 +24,11 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: pull image from docker
-        run: docker pull yairf11/collection2025:latest
+        run: sudo docker pull yairf11/collection2025:latest
       - name: delete old container
-        run: docker rm -f yairf11/collection2025-container
+        run: sudo docker rm -f yairf11/collection2025-container
       - name: run docker container
-        run: docker run -d -p 80:3000 -name collection2025-container -e MONGODB_CONNECTION_STRING="${{ secrets.MONGODB_CONNECTION_STRING }}" yairf11/collection2025
+        run: sudo docker run -d -p 80:3000 -name collection2025-container -e MONGODB_CONNECTION_STRING="${{ secrets.MONGODB_CONNECTION_STRING }}" yairf11/collection2025
       # - name: Deploy app
       #   uses: appleboy/ssh-action@master
       #   with:
