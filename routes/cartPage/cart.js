@@ -94,6 +94,9 @@ router.post('/removeProduct', authenticateToken, async (req, res) => {
         order.products.splice(index, 1);
         await order.save();
         
+        if (order.products.length == 0) {
+            await orders.deleteOne({ customerName: user.name})
+        }
         res.json({ message: 'order updated' });
     } catch (error) {
         console.error('Error updating order:', error.message);

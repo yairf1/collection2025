@@ -5,10 +5,11 @@ const quantity = document.getElementById('quantity');
 
 if (addToCartModal) {
   addToCartModal.addEventListener('show.bs.modal', event => {
+    failMessage.textContent = '';
     const button = event.relatedTarget;
     const productName = button.getAttribute('data-bs-product');
     const price = button.getAttribute('data-bs-price');
-    addToCartModal.removeAttribute('aria-hidden')
+    addToCartModal.removeAttribute('aria-hidden');
     updateModal(productName, price);
   });  
   addToCartModal.addEventListener('hide.bs.modal', event => {
@@ -32,13 +33,16 @@ addToCartForm.addEventListener('submit', async (event) => {
          body: JSON.stringify(data),
      });
      const result = await response.json();
-     console.log(result.message);
      
     if (result.message === 'something went wrong') {
       failMessage.style.color = 'red';
       failMessage.textContent = 'משהו השתבש, נסה שוב מאוחר יותר';
     } 
-    if (result.message === 'quantity must be more than 0') {
+    else if (result.message === 'you have already confirmed your order, you cant add more products') {
+      failMessage.style.color = 'red';
+      failMessage.textContent = 'כבר שלחת את ההזמנה ולכן לא ניתן להוסיף עוד מוצרים';
+    } 
+    else if (result.message === 'quantity must be more than 0') {
       failMessage.style.color = 'red';
       failMessage.textContent = 'אי אפשר להכניס ערכים שלילים בכמות';
     } 

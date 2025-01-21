@@ -15,7 +15,10 @@ confirmOrderButton.addEventListener('click', async () => {
         if (result.message === 'order confirmed') {
             confirmOrderButton.style.display = 'none';
             confirmationMessage.style.display = 'block';
-            confirmationMessage.textContent = result.orderId + '  ' + ':הזמנה אושרה, קוד ההזמנה הוא' ;
+            confirmationMessage.textContent = 'ניתן לצפות בהזמנה בדף המעקב ,' + 'הזמנה אושרה' ;
+            App().then((html) => {
+                document.getElementById('root').innerHTML = html;
+            });
         } else {
             failMessage.style.color = 'red';
             failMessage.textContent = 'משהו השתבש, נסה שוב מאוחר יותר';
@@ -69,11 +72,11 @@ async function App() {
     }
     
     await fetchOrder();
-    if (order.message === 'order not found' || order.products.length == 0) {
+    if (order.message === 'order not found' || order.products.length == 0 || order.isConfirmed) {
         confirmOrderButton.style.display = 'none';
         removeOrderButton.style.display = 'none';
         totalPriceDiv.style.display = 'none';
-        return `<h3 class="text-center">אין הזמנה פעילה, אתה יכול להזמין מוצרים בדף הבית</h3>`;
+        return `<h3 class="text-center"> אין הזמנה פעילה, אתה יכול להזמין מוצרים בדף הבית, או לבדוק הזמנה קיימת במעקב הזמנות</h3>`;
     }
     removeOrderButton.style.display = 'block';
     totalPriceDiv.style.display = 'block';

@@ -15,6 +15,7 @@ router.get('/', authenticateToken, (req,res) => {
 
 router.post('/getOrder', authenticateToken, async (req, res) => {
     const user = req.user;
+
     try {
         let order = await orders.findOne({customerName: user.name});
         if(!order) {return res.json({message: 'order not found'})}
@@ -29,8 +30,10 @@ router.post('/getOrder', authenticateToken, async (req, res) => {
 router.post('/deleteOrder', authenticateToken, async (req, res) => {
     const user = req.user;
     try {
-        let order = await orders.deleteOne({customerName: user.name});
+        let order = await orders.findOne({customerName: user.name});
         if(!order) {return res.json({message: 'order not found'})}
+        if(order.isPayed) {return res.json({message: 'cannot delete payed order'})}
+        await orders.deleteOne({customerName: user.name});
         res.json({message: 'order deleted successfully'});
     } catch (error) {
         console.error(error);

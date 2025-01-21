@@ -67,6 +67,10 @@ router.post('/addToCart', authenticateToken, async (req, res) => {
             return res.json({message: 'product added to cart succsessfully'});
         }
 
+        if (order.isConfirmed) {     
+            return res.json({message: 'you have already confirmed your order, you cant add more products'});
+        }
+
         order = await orders.updateOne(
             {customerName: req.user.name}, 
             {$push: {products: [{productName: productName, price: price, quantity: quantity, color: color, size: size}]}},
