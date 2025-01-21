@@ -63,18 +63,22 @@ router.post('/confirmOrder', authenticateToken, async (req, res) => {
 router.post('/updateOrder', authenticateToken, [
     body('quantity').notEmpty().isInt({min: 1,}).withMessage('quantity must be integer and more than 0'),
     body('color').custom(async(value, {req}) => {
-        const product = await products.findOne({productName: req.body.productName});
-        if(!product){ return false }
-        if(!product.colors.includes(value)){
-            return false;
-        }
+        try {
+            const product = await products.findOne({productName: req.body.productName});
+            if(!product){ return false }
+            if(!product.colors.includes(value)){
+                return false;
+            }
+        } catch (error) {console.error(error)}
     }).withMessage('color must be valid'),
     body('size').custom(async(value, {req}) => {
-        const product = await products.findOne({productName: req.body.productName});
-        if(!product){ return false }
-        if(!product.sizes.includes(value)){
-            return false;
-        }
+        try {
+            const product = await products.findOne({productName: req.body.productName});
+            if(!product){ return false }
+            if(!product.sizes.includes(value)){
+                return false;
+            }
+        } catch (error) {console.error(error)}
     }).withMessage('size must be valid'),
 ], async(req,res) => {
     const errors = validationResult(req);

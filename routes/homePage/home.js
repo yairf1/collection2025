@@ -53,33 +53,41 @@ router.post('/getProductDetails', async (req, res) => {
 
 router.post('/addToCart', authenticateToken,[
     body('productName').custom(async(value, {req}) => {
-        const products = await products.find();
-        if(!products){ return false }
-        if(!products.includes(value)){
-            return false;
-        }
+        try {
+            const products = await products.find();
+            if(!products){ return false }
+            if(!products.includes(value)){
+                return false;
+            }
+        } catch (error) {console.error(error)}
     }).withMessage('product name must be valid'),
     body('quantity').notEmpty().isInt({min: 1,}).withMessage('quantity must be integer and more than 0'),
     body('price').custom(async(value, {req}) => {
-        const product = await products.findOne({productName: req.body.productName});
-        if(!product){ return false }
-        if(product.price != value){
-            return false;
-        }
+        try {
+            const product = await products.findOne({productName: req.body.productName});
+            if(!product){ return false }
+            if(product.price != value){
+                return false;
+            }
+        }catch (error) {console.error(error)}
     }).withMessage('price must be valid'),
     body('color').custom(async(value, {req}) => {
-        const product = await products.findOne({productName: req.body.productName});
-        if(!product){ return false }
-        if(!product.colors.includes(value)){
-            return false;
-        }
+        try {
+            const product = await products.findOne({productName: req.body.productName});
+            if(!product){ return false }
+            if(!product.colors.includes(value)){
+                return false;
+            }
+        }catch (error) {console.error(error)}
     }).withMessage('color must be valid'),
     body('size').custom(async(value, {req}) => {
-        const product = await products.findOne({productName: req.body.productName});
-        if(!product){ return false }
-        if(!product.sizes.includes(value)){
-            return false;
-        }
+        try {
+            const product = await products.findOne({productName: req.body.productName});
+            if(!product){ return false }
+            if(!product.sizes.includes(value)){
+                return false;
+            }
+        } catch (error) {console.error(error)}
     }).withMessage('size must be valid'),
 ], async(req,res) => {
     

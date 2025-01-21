@@ -11,7 +11,12 @@ router.get('/',(req,res) => {
 })
 
 router.post('/createUser',[
-    body('name').notEmpty().withMessage('Username is required'),
+    body('name').notEmpty().custom(async(value, {req}) => {
+        try {
+            const user = await users.findOne({name: req.body.name});
+            if(user){ return false }
+        } catch (error) { console.error(error)}
+    }).withMessage('Username is required and must be unique'),
     body('password').notEmpty().withMessage('Invaild password'),
     body('clas').isInt({ min: 7, max: 12 }).withMessage('Clas must be a number between 7 and 12'),
     body('phone').isMobilePhone('any').withMessage('Phone must be a valid mobile number'),
