@@ -1,7 +1,5 @@
 const { Router } = require("express");
 const path = require("path");
-const cookieParser = require("cookie-parser");
-const bodyParser = require("body-parser");
 const router = Router();
 const products = require('../../scheme/products');
 const orders = require('../../scheme/orders');
@@ -15,7 +13,6 @@ router.get('/', authenticateToken, (req,res) => {
 
 router.post('/getOrder', authenticateToken, async (req, res) => {
     const user = req.user;
-
     try {
         let order = await orders.findOne({customerName: user.name});
         if(!order) {return res.json({message: 'order not found'})}

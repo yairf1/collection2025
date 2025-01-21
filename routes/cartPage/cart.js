@@ -1,11 +1,10 @@
 const { Router } = require("express");
 const path = require("path");
-const cookieParser = require("cookie-parser");
-const bodyParser = require("body-parser");
 const router = Router();
 const products = require('../../scheme/products');
 const orders = require('../../scheme/orders');
 const users = require('../../scheme/users');
+const { body, validationResult } = require('express-validator');
 const authenticateToken = require('../middleware/checkAuth');
 
 router.get('/', authenticateToken, (req,res) => {
@@ -61,7 +60,27 @@ router.post('/confirmOrder', authenticateToken, async (req, res) => {
     }
 });
 
-router.post('/updateOrder', authenticateToken, async (req, res) => {
+router.post('/updateOrder', authenticateToken, [
+    body('quantity').notEmpty().isInt({min: 1,}).withMessage('quantity must be integer and more than 0'),
+    body('color').custom(async(value, {req}) => {
+        const product = await products.findOne({productName: req.body.productName});
+        if(!product){ return false }
+        if(!product.colors.includes(value)){
+            return false;
+        }
+    }).withMessage('color must be valid'),
+    body('size').custom(async(value, {req}) => {
+        const product = await products.findOne({productName: req.body.productName});
+        if(!product){ return false }
+        if(!product.sizes.includes(value)){
+            return false;
+        }
+    }).withMessage('size must be valid'),
+], async(req,res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
     const user = req.user;
     const {index, quantity, color ,size} = req.body;
     try {

@@ -6,6 +6,7 @@ const router = Router();
 const products = require('../../scheme/products');
 const orders = require('../../scheme/orders');
 const authenticateToken = require('../middleware/checkAuth');
+const { body, validationResult } = require('express-validator');
 
 router.use(cookieParser());
 router.use(bodyParser.json());
@@ -50,7 +51,43 @@ router.post('/getProductDetails', async (req, res) => {
     }
 })
 
-router.post('/addToCart', authenticateToken, async (req, res) => {
+router.post('/addToCart', authenticateToken,[
+    body('productName').custom(async(value, {req}) => {
+        const products = await products.find();
+        if(!products){ return false }
+        if(!products.includes(value)){
+            return false;
+        }
+    }).withMessage('product name must be valid'),
+    body('quantity').notEmpty().isInt({min: 1,}).withMessage('quantity must be integer and more than 0'),
+    body('price').custom(async(value, {req}) => {
+        const product = await products.findOne({productName: req.body.productName});
+        if(!product){ return false }
+        if(product.price != value){
+            return false;
+        }
+    }).withMessage('price must be valid'),
+    body('color').custom(async(value, {req}) => {
+        const product = await products.findOne({productName: req.body.productName});
+        if(!product){ return false }
+        if(!product.colors.includes(value)){
+            return false;
+        }
+    }).withMessage('color must be valid'),
+    body('size').custom(async(value, {req}) => {
+        const product = await products.findOne({productName: req.body.productName});
+        if(!product){ return false }
+        if(!product.sizes.includes(value)){
+            return false;
+        }
+    }).withMessage('size must be valid'),
+], async(req,res) => {
+    
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     const { productName, price, color, size, quantity } = req.body;
     if(!productName || !color || !size || !quantity){
         return res.status(400).json({message: 'all fields are required'});
