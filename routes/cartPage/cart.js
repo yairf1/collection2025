@@ -64,18 +64,18 @@ router.post('/updateOrder', authenticateToken, [
     body('quantity').notEmpty().isInt({min: 1,}).withMessage('quantity must be integer and more than 0'),
     body('color').custom(async(value, {req}) => {
         try {
-            const product = await products.findOne({productName: req.body.productName});
-            if(!product){ return false }
-            if(!product.colors.includes(value)){
+            const productsTest = await products.findOne({productName: req.body.productName});
+            if(!productsTest){ return false }
+            if(!productsTest.colors.includes(value)){
                 return false;
             }
         } catch (error) {console.error(error)}
     }).withMessage('color must be valid'),
     body('size').custom(async(value, {req}) => {
         try {
-            const product = await products.findOne({productName: req.body.productName});
-            if(!product){ return false }
-            if(!product.sizes.includes(value)){
+            const productsTest = await products.findOne({productName: req.body.productName});
+            if(!productsTest){ return false }
+            if(!productsTest.sizes.includes(value)){
                 return false;
             }
         } catch (error) {console.error(error)}
@@ -85,6 +85,7 @@ router.post('/updateOrder', authenticateToken, [
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
+    
     const user = req.user;
     const {index, quantity, color ,size} = req.body;
     try {
