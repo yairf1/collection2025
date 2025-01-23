@@ -12,7 +12,29 @@
     </script>
 </head>
 <body>
-    <div id="header"></div>
+    <div class="sticky-top" id="header"></div>
+
+    <div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">              
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">מחיקת הזמנה</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>?האם אתה בטוח שברצונך למחוק את ההזמנה</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="buttonfalse">סגור</button>
+                    <form action="/admin/deleteOrder" method="POST" onsubmit="onSubmit(event)">
+                        <input type="hidden" id="orderId" name="orderId">
+                        <button type="submit" class="btn btn-danger" data-bs-dismiss="modal" id="buttonTrue">מחק הזמנה</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container text-center col-md-6" id="window">
         <div class="row mb-4"><div class="col "><h1  class="main-title">הוספת מוצר</h1></div></div>
         <div class="row justify-content-center">
@@ -22,9 +44,9 @@
             <div id="registerDiv" class="w-75 border border-3 border-secondary rounded-3 p-3 border-opacity-25 secondary-bg">
                 <form id="registerForm">
                     <input type="text" class="form-control mb-3 bg-light text-end " id="name" placeholder="שם מוצר" required>
-                    <input type="text" class="form-control mb-3 bg-light text-end" id="colors" placeholder="צבעים" required>
+                    <input type="text" class="form-control mb-3 bg-light text-end" id="colors" placeholder="צבעים">
                     <input type="text" class="form-control mb-3 bg-light text-end" id="price" placeholder="מחיר" required>
-                    <input type="text" class="form-control mb-3 bg-light text-end" id="sizes" placeholder="מידות" required>
+                    <input type="text" class="form-control mb-3 bg-light text-end" id="sizes" placeholder="מידות">
                     <input type="text" class="form-control mb-4 bg-light text-end" id="img" placeholder="תמונה">
                     <input type="submit" class="btn btn-primary" id="submit">
                     <div id="loadingSpinners" class="spinner-border text-info" role="status" style="display: none;">
@@ -33,6 +55,43 @@
                 </form>
             </div>
             <div class="mb-2" id="failMessage" style="color: red;"></div>
+        </div>
+        <div class="row justify-content-center" >
+            <div class="card shadow-sm"><div class="card-body" id="root"></div></div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="container my-4">
+                <div class="card shadow-sm">
+                    <div class="card-body d-flex justify-content-between align-items-center" dir="rtl">
+                        <div class="text-right">
+                            <h4 class="text-primary d-inline ms-2"> הזמנה מספר:</h4> 
+                            <span class="text-secondary d-inline" id="orderId" dir="ltr" style="font-weight: bold;">${order.orderId}</span>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-secondary " id="costumerNameDiv">costumer</div>
+                            <div class="" id="isPayedDiv">check</div>
+                        </div>
+                        <div class="d-flex">
+                            <button type="button" class="btn btn-danger me-1 ms-2" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-order='${order._id}'>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                                </svg>
+                            </button>
+                            <button type="button" class="btn btn-secondary me-1 ms-2" onclick="showDetails('${order.id}')">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
+                                    <path d="M3.204 5h9.592L8 10.481zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659"/>
+                                </svg>
+                            </button>
+                            <button type="button" class="btn btn-success me-1 ms-2" onclick="markReady('${order.id}')" disabled>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                                    <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

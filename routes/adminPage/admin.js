@@ -3,6 +3,7 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const users = require('../../scheme/users');
 const products = require('../../scheme/products');
+const orders = require('../../scheme/orders');
 const authenticateToken = require('../middleware/checkAuth');
 const router = Router();
 
@@ -33,5 +34,30 @@ router.post('/createProduct', async(req,res) => {
         }
     }
 });
+
+router.post('/getAllOrders', async (req, res) => {
+    try {
+        let order = await orders.find();
+        if(!order) {return res.json({message: 'order not found'})}
+        res.json(order);
+    } catch (error) {
+        console.error(error);
+        res.json({message: 'error'});
+    }
+})
+
+router.post('/deleteOrder', async (req, res) => {
+    // const user = req.user;
+    // try {
+    //     let order = await orders.findOne({customerName: user.name});
+    //     if(!order) {return res.json({message: 'order not found'})}
+    //     if(order.isPayed) {return res.json({message: 'cannot delete payed order'})}
+    //     await orders.deleteOne({customerName: user.name});
+    //     res.json({message: 'order deleted successfully'});
+    // } catch (error) {
+    //     console.error(error);
+    //     res.json({message: 'error'});
+    // }
+})
 
 module.exports = router;

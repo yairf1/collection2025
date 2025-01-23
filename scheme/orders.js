@@ -43,6 +43,10 @@ const orderSchema = new mongoose.Schema({
     isPayed:{
         type: Boolean,
         default: false,
+    },
+    isReady:{
+        type: Boolean,
+        default: false,
     }
 });
 

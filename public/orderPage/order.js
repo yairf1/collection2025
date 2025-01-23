@@ -21,8 +21,7 @@ async function App() {
     }
     
     await fetchOrder();
-    console.log(order.message);
-    
+ 
     if (order.message === 'order not found' || !order.isConfirmed || order.products.length == 0 ) {
         return `<h3 class="text-center">אין הזמנה פעילה, אתה יכול להזמין מוצרים בדף הבית</h3>`;
     }
@@ -37,7 +36,7 @@ async function App() {
         });
     }));    
     return `
-        <div class="container my-4">
+    <div class="container my-4">
         <div class="card shadow-sm">
             <div class="card-body d-flex justify-content-between align-items-center" dir="rtl">
                 <div class="text-right">
