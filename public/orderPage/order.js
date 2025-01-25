@@ -53,8 +53,8 @@ async function App() {
                 </div>
             </div>
             ${productCards.join('')}   
-            <div class="row"><div class="col-3 mx-auto mb-1 text-secondary" id="totalPriceDiv">סך הכל: ${order.totalPrice} ש"ח</div></div>
-            <div class="row"><div class="col-3 mx-auto mb-3" id="isPayedDiv" style="color:${order.isPayed ? 'green' : 'red'}">${order.isPayed ?  'הזמנה שולמה' : 'הזמנה לא שולמה'}</div></div>
+            <div class="row text-center"><div class="col-6 mx-auto mb-1 text-secondary" id="totalPriceDiv">סך הכל: ${order.totalPrice} ש"ח</div></div>
+            <div class="row text-center"><div class="col-6 mx-auto mb-3" id="isPayedDiv" style="color:${order.isPayed ? 'green' : 'red'}">${order.isPayed ?  'הזמנה שולמה' : 'הזמנה לא שולמה'}</div></div>
         </div>
     </div>
     `;
