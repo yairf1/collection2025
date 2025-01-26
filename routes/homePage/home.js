@@ -51,83 +51,117 @@ router.post('/getProductDetails', async (req, res) => {
     }
 })
 
-router.post('/addToCart', authenticateToken,[
-    body('productName').custom(async(value, {req}) => {
+const { body, validationResult } = require('express-validator');
+const sanitize = require('validator').escape;
+
+router.post(
+  '/addToCart',
+  authenticateToken,
+  [
+    body('productName')
+      .notEmpty()
+      .withMessage('Product name is required')
+      .customSanitizer((value) => sanitize(value))
+      .custom(async (value, { req }) => {
         try {
-            const productsTest = await products.find();
-            if(!productsTest){ return false }
-            if(!productsTest.includes(value)){
-                return false;
-            }
-        } catch (error) {console.error(error)}
-    }).withMessage('product name must be valid'),
-    body('quantity').notEmpty().isInt({min: 1,}).withMessage('quantity must be integer and more than 0'),
-    body('price').custom(async(value, {req}) => {
-        try {
-            const productsTest = await products.findOne({productName: req.body.productName});
-            if(!productsTest){ return false }
-            if(productsTest.price != value){
-                return false;
-            }
-        }catch (error) {console.error(error)}
-    }).withMessage('price must be valid'),
-    body('color').custom(async(value, {req}) => {
-        try {
-            const productsTest = await products.findOne({productName: req.body.productName});
-            if(!productsTest){ return false }
-            if(!productsTest.colors.includes(value)){
-                return false;
-            }
-        }catch (error) {console.error(error)}
-    }).withMessage('color must be valid'),
-    body('size').custom(async(value, {req}) => {
-        try {
-            const productsTest = await products.findOne({productName: req.body.productName});
-            if(!productsTest){ return false }
-            if(!productsTest.sizes.includes(value)){
-                return false;
-            }
-        } catch (error) {console.error(error)}
-    }).withMessage('size must be valid'),
-], async(req,res) => {
-    
+          const product = await products.findOne({ productName: value });
+          if (!product) {
+            throw new Error('Product does not exist');
+          }
+          req.product = product; // Attach product to the request for reuse
+        } catch (error) {
+          throw new Error('Invalid product name');
+        }
+      })
+      .withMessage('Product name must be valid'),
+
+    body('quantity')
+      .notEmpty()
+      .withMessage('Quantity is required')
+      .isInt({ min: 1 })
+      .withMessage('Quantity must be an integer greater than 0'),
+
+    body('price')
+      .notEmpty()
+      .withMessage('Price is required')
+      .isNumeric()
+      .withMessage('Price must be a number')
+      .custom((value, { req }) => {
+        if (!req.product || req.product.price != value) {
+          throw new Error('Invalid price for the selected product');
+        }
+        return true;
+      }),
+
+    body('color')
+      .notEmpty()
+      .withMessage('Color is required')
+      .customSanitizer((value) => sanitize(value))
+      .custom((value, { req }) => {
+        if (!req.product || !req.product.colors.includes(value)) {
+          throw new Error('Invalid color for the selected product');
+        }
+        return true;
+      }),
+
+    body('size')
+      .notEmpty()
+      .withMessage('Size is required')
+      .customSanitizer((value) => sanitize(value))
+      .custom((value, { req }) => {
+        if (!req.product || !req.product.sizes.includes(value)) {
+          throw new Error('Invalid size for the selected product');
+        }
+        return true;
+      }),
+  ],
+  async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ errors: errors.array() });
     }
 
     const { productName, price, color, size, quantity } = req.body;
-    if(!productName || !color || !size || !quantity){
-        return res.status(400).json({message: 'all fields are required'});
-    }
-    if(quantity <= 0 || isNaN(quantity)){
-        return res.status(400).json({message: 'quantity must be more than 0'});
-    }
-    // search if client have existing order and open new one if he havent
+
     try {
-        let order = await orders.findOne({customerName: req.user.name});
+      // Search or create an order
+      let order = await orders.findOne({ customerName: req.user.name });
 
-        if(!order){
-            await orders.create({products: {productName: productName, color: color, price: price, size: size, quantity: quantity}, customerName: req.user.name});
-            return res.json({message: 'product added to cart succsessfully'});
-        }
+      if (!order) {
+        await orders.create({
+          products: [{ productName, price, color, size, quantity }],
+          customerName: req.user.name,
+        });
+        return res.json({ message: 'Product added to cart successfully' });
+      }
 
-        if (order.isConfirmed) {     
-            return res.json({message: 'you have already confirmed your order, you cant add more products'});
-        }
+      if (order.isConfirmed) {
+        return res.json({
+          message: 'You have already confirmed your order, you can’t add more products',
+        });
+      }
 
-        order = await orders.updateOne(
-            {customerName: req.user.name}, 
-            {$push: {products: [{productName: productName, price: price, quantity: quantity, color: color, size: size}]}},
-        );
-        if (order.modifiedCount === 0) {
-            return res.json({ message: 'Order not found or not updated' });
+      // Update existing order
+      const updatedOrder = await orders.updateOne(
+        { customerName: req.user.name },
+        {
+          $push: {
+            products: [{ productName, price, quantity, color, size }],
+          },
         }
-        return res.json({message: 'product added to cart succsessfully'});
-    }catch(error){
-        console.error(error);
-        return res.json({message: 'something went wrong'});
+      );
+
+      if (updatedOrder.modifiedCount === 0) {
+        return res.json({ message: 'Order not found or not updated' });
+      }
+
+      return res.json({ message: 'Product added to cart successfully' });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Something went wrong' });
     }
-});
+  }
+);
+
 
 module.exports = router;
