@@ -47,17 +47,48 @@ router.post('/getAllOrders', async (req, res) => {
 })
 
 router.post('/deleteOrder', async (req, res) => {
-    // const user = req.user;
-    // try {
-    //     let order = await orders.findOne({customerName: user.name});
-    //     if(!order) {return res.json({message: 'order not found'})}
-    //     if(order.isPayed) {return res.json({message: 'cannot delete payed order'})}
-    //     await orders.deleteOne({customerName: user.name});
-    //     res.json({message: 'order deleted successfully'});
-    // } catch (error) {
-    //     console.error(error);
-    //     res.json({message: 'error'});
-    // }
+    const {orderId} = req.body;
+    try {
+        let order = await orders.findOne({_id: orderId});
+        if(!order) {return res.json({message: 'order not found'})}
+        if(order.isPayed) {return res.json({message: 'cannot delete payed order'})}
+        await orders.deleteOne({_id: orderId});
+        
+        res.json({message: 'order deleted successfully'});
+    } catch (error) {
+        console.error(error);
+        res.json({message: 'error'});
+    }
+})
+
+router.post('/markPayed', async (req, res) => {
+    const {orderId} = req.body;
+    try {
+        let order = await orders.findOne({_id: orderId});
+        if(!order) {return res.json({message: 'order not found'})}
+        order.isPayed = order.isPayed ? false : true;
+        await order.save();
+        
+        res.json({message: 'order updated successfully'});
+    } catch (error) {
+        console.error(error);
+        res.json({message: 'error'});
+    }
+})
+
+router.post('/markReady', async (req, res) => {
+    const {orderId} = req.body;
+    try {
+        let order = await orders.findOne({_id: orderId});
+        if(!order) {return res.json({message: 'order not found'})}
+        order.isReady = order.isReady ? false : true;
+        await order.save();
+        
+        res.json({message: 'order updated successfully'});
+    } catch (error) {
+        console.error(error);
+        res.json({message: 'error'});
+    }
 })
 
 module.exports = router;
