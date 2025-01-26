@@ -7,6 +7,7 @@ const products = require('../../scheme/products');
 const orders = require('../../scheme/orders');
 const authenticateToken = require('../middleware/checkAuth');
 const { body, validationResult } = require('express-validator');
+const sanitize = require('validator').escape;
 
 router.use(cookieParser());
 router.use(bodyParser.json());
@@ -51,8 +52,6 @@ router.post('/getProductDetails', async (req, res) => {
     }
 })
 
-const { body, validationResult } = require('express-validator');
-const sanitize = require('validator').escape;
 
 router.post(
   '/addToCart',
