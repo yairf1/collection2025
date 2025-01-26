@@ -9,7 +9,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="public/photos/logo.jpg" alt="Logo" width="200" height="100">
+    <img src="public/img/logo.jpg" alt="Logo" width="200" height="100">
   </a>
 
 </div>
