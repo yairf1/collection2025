@@ -22,10 +22,10 @@ router.get('/',(req,res) => {
 });
 
 router.post('/createProduct', async(req,res) => {
-    const {name, colors, price, sizes} = req.body;
+    const {name, colors, price, sizes,} = req.body;
     if (name && colors && price && sizes){
         try{
-            await products.create({productName: name, colors: colors.split(',').map(item => item.trim()), price: price, sizes: sizes.split(',').map(item => item.trim())});
+            await products.create({productName: name, colors: colors.split(',').map(item => item.trim()), price: price, sizes: sizes.split(',').map(item => item.trim()), img: `../img/${name}.jpg`});
             return res.send('product created successfully');
         }
         catch(err){
