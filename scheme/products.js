@@ -12,6 +12,7 @@ const products = new mongoose.Schema({
     price: {
         type: Number,
         default:0,
+        min: 0,
         require: true,
     },
     sizes: {
@@ -22,6 +23,10 @@ const products = new mongoose.Schema({
         type: String,
         default: '#',
     },
+    type:{
+        type: String,
+        default: '',
+    }
 })
 
 module.exports = mongoose.model('products',products);

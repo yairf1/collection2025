@@ -7,7 +7,7 @@ form.addEventListener('submit', async(event) => {
     let colors = document.getElementById('colors').value;
     let sizes = document.getElementById('sizes').value;
     let price = document.getElementById('price').value;
-    // let img = document.getElementById('img').value;
+    let type = document.getElementById('type').value;
     
     loadingSpinners.style.display = 'block';
     event.preventDefault();
@@ -18,7 +18,7 @@ form.addEventListener('submit', async(event) => {
             method:'Post',
             Credential:'include',
             headers:{'Content-Type': 'application/x-www-form-urlencoded'},
-            body:`name=${name}&colors=${colors}&sizes=${sizes}&price=${price}`
+            body:`name=${name}&colors=${colors}&sizes=${sizes}&price=${price}&type=${type}`
         })
         .then(response => response.text())
         .then((response) => {

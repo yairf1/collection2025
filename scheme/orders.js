@@ -13,6 +13,7 @@ const orderSchema = new mongoose.Schema({
             price: {
                 type: Number,
                 default: 0,
+                min: 0,
                 required: true,
             },
             size: {
@@ -28,6 +29,7 @@ const orderSchema = new mongoose.Schema({
     totalPrice: {
         type: Number,
         default: 0,
+        min: 0,
     },
     customerName: {
         type:String,

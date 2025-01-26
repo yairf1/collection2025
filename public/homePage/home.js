@@ -71,28 +71,45 @@ async function App() {
     try {
       const response = await fetch('/getAllProducts', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },  
-      });  
+        headers: { 'Content-Type': 'application/json' },
+      });
       products = await response.json();
     } catch (error) {
       console.error('Error fetching products', error);
-    }  
-  }  
+    }
+  }
 
   await fetchProducts();
 
-  const productCards = products.map((product) =>
-    Card({
-      img: product.img,
-      productName: product.productName,
-      price: product.price,
-    })  
-  );  
+  function createCardsByType(products, type) {
+    return products
+      .filter((product) => product.type === type)
+      .map((product) =>
+        Card({
+          img: product.img,
+          productName: product.productName,
+          price: product.price,
+        })
+      )
+      .join('');
+  }
 
-  return `<div class="row g-3">${productCards.join('')}</div>`;
-}  
+  const shirtCards = createCardsByType(products, 'shirt');
+  const sweaterCards = createCardsByType(products, 'sweater');
+  const tankTopCards = createCardsByType(products, 'tank top');
+  const pantsCards = createCardsByType(products, 'pants');
+
+  return `
+    <div class="row text-center"><h3 class="text-center text-primary">חולצות</h3></div>
+    <div class="row g-3">${shirtCards}</div>
+    <div class="row text-center"><h3 class="text-center text-primary">סוודרים</h3></div>
+    <div class="row g-3">${sweaterCards}</div>
+    <div class="row text-center"><h3 class="text-center text-primary">גופיות</h3></div>
+    <div class="row g-3">${tankTopCards}</div>
+    <div class="row text-center"><h3 class="text-center text-primary">מכנסיים</h3></div>
+    <div class="row g-3">${pantsCards}</div>
+  `;
+}
 
 function Card({ img, productName, price }) {
   return `
@@ -101,22 +118,19 @@ function Card({ img, productName, price }) {
         <div class="card-body text-center">
           <div class="mb-2">
             <img src="${img}" alt="${productName} img" class="img-fluid rounded" />
-          </div>  
-          <div class="mb-2" id="productName">
-            <strong>${productName}</strong>
-          </div>  
-          <div class="mb-2" id="price">
-            מחיר: ${price} ש"ח
-          </div>  
+          </div>
+          <div class="mb-2"><strong>${productName}</strong></div>
+          <div class="mb-2">מחיר: ${price} ש"ח</div>
           <div>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addToCartModal" data-bs-product="${productName}" data-bs-price="${price}">
               הוסף לעגלה
-            </button>  
-          </div>  
-        </div>  
-      </div>  
-    </div>`;  
-}    
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+  
 
 
 async function updateModal(productName, price) {

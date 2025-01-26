@@ -48,7 +48,13 @@
                     <input type="text" class="form-control mb-3 bg-light text-end" id="colors" placeholder="צבעים">
                     <input type="text" class="form-control mb-3 bg-light text-end" id="price" placeholder="מחיר" required>
                     <input type="text" class="form-control mb-3 bg-light text-end" id="sizes" placeholder="מידות">
-                    <input type="text" class="form-control mb-4 bg-light text-end" id="img" placeholder="תמונה">
+                    <select class="form-select mb-3 bg-light text-end" aria-label="Default select example" id="type">
+                        <option disabled selected >:סוג מוצר</option>
+                        <option value="shirt">חולצה</option>
+                        <option value="sweater">סוודר</option>
+                        <option value="tank top">גופייה</option>
+                        <option value="pants">מכנסיים</option>
+                    </select>
                     <input type="submit" class="btn btn-primary" id="submit">
                     <div id="loadingSpinners" class="spinner-border text-info" role="status" style="display: none;">
                         <span class="visually-hidden">Loading...</span>
