@@ -98,6 +98,7 @@ async function App() {
   const sweaterCards = createCardsByType(products, 'sweater');
   const tankTopCards = createCardsByType(products, 'tank top');
   const pantsCards = createCardsByType(products, 'pants');
+  const otherCards = createCardsByType(products, 'other');
 
   return `
     <div class="row text-center"><h3 class="text-center text-primary">חולצות</h3></div>
@@ -108,6 +109,8 @@ async function App() {
     <div class="row g-3">${tankTopCards}</div>
     <div class="row text-center"><h3 class="text-center text-primary">מכנסיים</h3></div>
     <div class="row g-3">${pantsCards}</div>
+    <div class="row text-center"><h3 class="text-center text-primary">שונות</h3></div>
+    <div class="row g-3">${otherCards}</div>
   `;
 }
 

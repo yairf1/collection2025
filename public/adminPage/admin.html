@@ -35,7 +35,37 @@
             </div>
         </div>
     </div>
-
+    
+    <div class="offcanvas offcanvas-start" data-bs-backdrop="static" tabindex="-1" id="filterCanvas" aria-labelledby="staticBackdropLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="staticBackdropLabel">סינון</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body" >
+            <h4 class="text-primary">
+                בחר קטגוריה לסינון הזמנות
+            </h4>
+            <div class="form-control d-flex flex-column align-items-start" dir="rtl">
+                <div class="d-flex align-items-center mb-2">
+                  <input class="form-check-input ms-2" type="checkbox" name="notPayed" id="notPayed" value="notPayed1" />
+                  <label class="form-check-label" for="notPayed1">לא שולם</label>
+                </div>
+                <div class="d-flex align-items-center">
+                  <input class="form-check-input ms-2" type="checkbox" name="payed" id="payed" value="payed" />
+                  <label class="form-check-label" for="notPayed2">שולם</label>
+                </div>
+                <div class="d-flex align-items-center">
+                  <input class="form-check-input ms-2" type="checkbox" name="notReady" id="notReady" value="notReady" />
+                  <label class="form-check-label" for="notPayed2">לא מוכן</label>
+                </div>
+                <div class="d-flex align-items-center">
+                  <input class="form-check-input ms-2" type="checkbox" name="ready" id="ready" value="ready" />
+                  <label class="form-check-label" for="notPayed2">מוכן</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <div class="container text-center col-md-6" id="window">
         <div class="row justify-content-center mt-3" >
             <div class="row text-center"><h1 class="text-primary">ניהול הזמנות</h1></div>
@@ -48,7 +78,12 @@
                 aria-label="חיפוש"
                 aria-describedby="searchButton"
                 />
-                <button class="btn btn-primary" id="searchButton">חפש</button>
+                <button class="btn btn-info" id="searchButton">חפש</button>
+                <button disabled class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas" aria-controls="staticBackdrop">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel" viewBox="0 0 16 16">
+                        <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2z"/>
+                    </svg>
+                </button>
             </div>
             <div id="searchError" class="text-danger mt-2"></div>              
             <div class="row card shadow-sm mb-3"><div class="card-body col-12" id="root"><h3 class="text-center text-info">חפש הזמנה לפי שם לקוח או מספר הזמנה</h3></div></div>
@@ -70,6 +105,7 @@
                         <option value="sweater">סוודר</option>
                         <option value="tank top">גופייה</option>
                         <option value="pants">מכנסיים</option>
+                        <option value="other">שונות</option>
                     </select>
                     <input type="submit" class="btn btn-primary" id="submit">
                     <div id="loadingSpinners" class="spinner-border text-info" role="status" style="display: none;">
@@ -81,7 +117,9 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+      
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../adminPage/admin.js"></script>
 </body>
 </html>
