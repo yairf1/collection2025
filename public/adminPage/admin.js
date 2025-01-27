@@ -123,7 +123,7 @@ async function primeCard(order) {
       <div class="card-body d-flex justify-content-between align-items-center" dir="rtl">
         <div class="text-right">
           <h4 class="text-primary d-inline ms-2"> הזמנה מספר:</h4> 
-          <span class="text-secondary d-inline" id="orderId" dir="ltr" style="font-weight: bold;">${order.orderId}</span>
+          <span class="text-secondary d-inline" id="orderId" dir="ltr" style="font-weight: bold;">${order.orderId ? order.orderId : 'not confirmed'}</span>
         </div>
         <div class="text-center">
           <div class="text-secondary" id="costumerNameDiv">${order.customerName}</div>
