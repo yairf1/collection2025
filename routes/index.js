@@ -9,8 +9,11 @@ const register = require('../routes/registerPage/register');
 const admin = require('../routes/adminPage/admin');
 const error = require('../routes/errorPage/error');
 const order = require('../routes/orderPage/order');
+const about = require('../routes/aboutPage/about');
+
 
 router.use('/',home);
+router.use('/about',about);
 router.use('/order',order);
 router.use('/cart',cart);
 router.use('/profile',profile);
