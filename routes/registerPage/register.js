@@ -18,7 +18,7 @@ router.post('/createUser',[
         } catch (error) { console.error(error)}
     }).withMessage('Username is required and must be unique'),
     body('password').notEmpty().withMessage('Invaild password'),
-    body('clas').isInt({ min: 7, max: 12 }).withMessage('Clas must be a number between 7 and 12'),
+    body('clas').isInt({ min: 7, max: 13 }).withMessage('Clas must be a number between 7 and 13'),
     body('phone').isMobilePhone('any').withMessage('Phone must be a valid mobile number'),
     body('email').isEmail().notEmpty().withMessage('Invalid email'),
 ], async(req,res) => {

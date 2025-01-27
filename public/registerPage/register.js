@@ -27,7 +27,7 @@ form.addEventListener('submit', async(event) => {
                 if (data.message == 'user created successfully') {
                     window.location.href = '/login'
                 } else {
-                    failTry.textContent = data.errors[0].msg;
+                    failTry.textContent = 'קרתה שגיאה, נסה שם משתמש אחר ואם הבעיה לא נפתרת נסה שוב מאוחר יותר';
                 }
             })
         }catch(err){
