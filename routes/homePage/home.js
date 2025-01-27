@@ -59,57 +59,57 @@ router.post(
   [
     body('productName')
       .notEmpty()
-      .withMessage('Product name is required')
+      .withMessage('product name is required')
       .customSanitizer((value) => sanitize(value))
       .custom(async (value, { req }) => {
         try {
           const product = await products.findOne({ productName: value });
           if (!product) {
-            throw new Error('Product does not exist');
+            throw new Error('product does not exist');
           }
           req.product = product; // Attach product to the request for reuse
         } catch (error) {
-          throw new Error('Invalid product name');
+          throw new Error('invalid product name');
         }
       })
       .withMessage('Product name must be valid'),
 
     body('quantity')
       .notEmpty()
-      .withMessage('Quantity is required')
+      .withMessage('quantity is required')
       .isInt({ min: 1 })
-      .withMessage('Quantity must be an integer greater than 0'),
+      .withMessage('quantity must be an integer greater than 0'),
 
     body('price')
       .notEmpty()
-      .withMessage('Price is required')
+      .withMessage('price is required')
       .isNumeric()
-      .withMessage('Price must be a number')
+      .withMessage('price must be a number')
       .custom((value, { req }) => {
         if (!req.product || req.product.price != value) {
-          throw new Error('Invalid price for the selected product');
+          throw new Error('invalid price for the selected product');
         }
         return true;
       }),
 
     body('color')
       .notEmpty()
-      .withMessage('Color is required')
+      .withMessage('color is required')
       .customSanitizer((value) => sanitize(value))
       .custom((value, { req }) => {
         if (!req.product || !req.product.colors.includes(value)) {
-          throw new Error('Invalid color for the selected product');
+          throw new Error('invalid color for the selected product');
         }
         return true;
       }),
 
     body('size')
       .notEmpty()
-      .withMessage('Size is required')
+      .withMessage('size is required')
       .customSanitizer((value) => sanitize(value))
       .custom((value, { req }) => {
         if (!req.product || !req.product.sizes.includes(value)) {
-          throw new Error('Invalid size for the selected product');
+          throw new Error('invalid size for the selected product');
         }
         return true;
       }),
@@ -123,7 +123,7 @@ router.post(
     const { productName, price, color, size, quantity } = req.body;
 
     try {
-      // Search or create an order
+      // search or create an order
       let order = await orders.findOne({ customerName: req.user.name });
 
       if (!order) {
@@ -131,16 +131,14 @@ router.post(
           products: [{ productName, price, color, size, quantity }],
           customerName: req.user.name,
         });
-        return res.json({ message: 'Product added to cart successfully' });
+        return res.json({ message: 'product added to cart successfully' });
       }
 
       if (order.isConfirmed) {
-        return res.json({
-          message: 'You have already confirmed your order, you can’t add more products',
-        });
+        return res.json({message: 'you have already confirmed your order, you cant add more products'});
       }
 
-      // Update existing order
+      // update existing order
       const updatedOrder = await orders.updateOne(
         { customerName: req.user.name },
         {
@@ -151,16 +149,15 @@ router.post(
       );
 
       if (updatedOrder.modifiedCount === 0) {
-        return res.json({ message: 'Order not found or not updated' });
+        return res.json({ message: 'order not found or not updated' });
       }
 
-      return res.json({ message: 'Product added to cart successfully' });
+      return res.json({ message: 'product added to cart successfully' });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Something went wrong' });
+      return res.status(500).json({ message: 'something went wrong' });
     }
   }
 );
-
 
 module.exports = router;

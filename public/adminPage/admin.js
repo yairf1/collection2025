@@ -59,10 +59,11 @@ document.getElementById('searchInput').addEventListener('input', () => {
   const root = document.getElementById('root');
 
   searchError.textContent = '';
+  document.getElementById('root').innerHTML = '';
 
   if (!query) {
     Promise.all(orders.map(order => primeCard(order))).then(ordersCards => {
-      root.innerHTML = ordersCards.join('');
+      root.innerHTML = '<h3 class="text-center text-info">חפש הזמנה לפי שם לקוח או מספר הזמנה</h3>';
   });
       return;
   }
@@ -81,11 +82,10 @@ document.getElementById('searchInput').addEventListener('input', () => {
 });
 
 let orders = [];
-App().then(html => {
-  document.getElementById('root').innerHTML = html;
-});
+App();
 
 async function App() {
+  
   try {
     const response = await fetch('/admin/getAllOrders', {
       method: 'POST',

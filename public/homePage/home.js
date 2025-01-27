@@ -46,7 +46,7 @@ addToCartForm.addEventListener('submit', async (event) => {
       failMessage.style.color = 'red';
       failMessage.textContent = 'אי אפשר להכניס ערכים שלילים בכמות';
     } 
-    else if (result.message === 'product added to cart succsessfully'){
+    else if (result.message === 'product added to cart successfully'){
       failMessage.style.color = 'green';
       failMessage.textContent = 'המוצר נוסף בהצלחה לעגלת הקניות'
      }
