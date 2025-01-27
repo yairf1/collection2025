@@ -63,7 +63,7 @@ document.getElementById('searchInput').addEventListener('input', () => {
 
   if (!query) {
     Promise.all(orders.map(order => primeCard(order))).then(ordersCards => {
-      root.innerHTML = '<h3 class="text-center text-info">חפש הזמנה לפי שם לקוח או מספר הזמנה</h3>';
+      root.innerHTML = ordersCards.join('');
   });
       return;
   }
@@ -82,7 +82,9 @@ document.getElementById('searchInput').addEventListener('input', () => {
 });
 
 let orders = [];
-App();
+App().then((html => {
+  document.getElementById('root').innerHTML = html;
+}))
 
 async function App() {
   
@@ -94,7 +96,7 @@ async function App() {
     orders = await response.json();
 
     if (orders.message === 'order not found') {
-      return `<h3 class="text-center">אין הזמנה פעיל</h3>`;
+      return `<h3 class="text-center">אין הזמנה פעילה</h3>`;
     }
 
     const ordersCards = await Promise.all(orders.map(order => primeCard(order)));

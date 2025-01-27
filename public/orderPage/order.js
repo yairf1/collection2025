@@ -66,7 +66,7 @@ async function Card({productName, price, quantity, size, color}) {
         <div class="card shadow-sm mb-3 mx-2">
             <div class="card-body d-flex justify-content-between align-items-center" dir="rtl">
                 <div class="text-right">
-                    <img src=${'../img/'+productName+'.jpg'} alt="${productName} img" class="img-fluid rounded me-3" style="width: 50px; height: auto;">
+                    <img src="../img/${productName}.jpg" alt="${productName} img" class="img-fluid rounded me-3" style="width: 50px; height: auto;">
                     <strong class="me-3">${productName}</strong>
                 </div>
                 <div class="d-flex">
