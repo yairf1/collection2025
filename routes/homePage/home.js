@@ -129,6 +129,7 @@ router.post(
       if (!order) {
         await orders.create({
           products: [{ productName, price, color, size, quantity }],
+          totalPrice: price * quantity,
           customerName: req.user.name,
         });
         return res.json({ message: 'product added to cart successfully' });
@@ -145,6 +146,7 @@ router.post(
           $push: {
             products: [{ productName, price, quantity, color, size }],
           },
+          totalPrice: order.totalPrice + price * quantity,
         }
       );
 

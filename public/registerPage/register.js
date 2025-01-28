@@ -19,7 +19,7 @@ form.addEventListener('submit', async(event) => {
                 method:'Post',
                 Credential:'include',
                 headers:{'Content-Type': 'application/x-www-form-urlencoded'},
-                body:`name=${name}&password=${password}&clas=${clas}&phone=${phone}&email=${email}`
+                body:`name=${name.trim()}&password=${password}&clas=${clas}&phone=${phone}&email=${email}`
             })
             .then(async (response) => {
                 const data = await response.json()

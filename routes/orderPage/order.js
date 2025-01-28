@@ -38,4 +38,20 @@ router.post('/deleteOrder', authenticateToken, async (req, res) => {
     }
 })
 
+router.post('/markNotConfirmed', authenticateToken, async (req, res) => {
+    const user = req.user;
+    try {
+        let order = await orders.findOne({customerName: user.name});
+        if(!order) {return res.json({message: 'order not found'})}
+        if(order.isPayed) {return res.json({message: 'cannot edit payed order'})}
+        order.isConfirmed = false;
+        order.orderId = '';
+        await order.save();
+        res.json({message: 'order updated successfully'});
+    } catch (error) {
+        console.error(error);
+        res.json({message: 'error'});
+    }
+})
+
 module.exports = router;

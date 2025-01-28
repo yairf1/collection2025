@@ -44,6 +44,9 @@ async function App() {
                     <span class="text-secondary d-inline" id="orderId" dir="ltr" style="font-weight: bold;">${order.orderId}</span>
                 </div>
                 <div class="d-flex">
+                    <button type="button" class="btn btn-warning me-1 ms-2" onclick='markNotConfirmed()'>
+                        ערוך הזמנה
+                    </button>
                     <button type="button" class="btn btn-danger me-1 ms-2" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-order='${order._id}'>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                             <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
@@ -116,3 +119,34 @@ async function onSubmit(event){
         console.error(error);
     }
 };
+
+async function markNotConfirmed(){
+    try {
+        const response = await fetch('/order/markNotConfirmed', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        });
+
+        result = await response.json();
+
+        if (result.message === 'order updated successfully') {
+            failMessage.style.color = 'green';
+            failMessage.textContent = 'ההזמנה עודכנה בהצלחה, ניתן לערוך את ההזמנה בעגלת הקניות'
+            await App().then((html) => {
+                document.getElementById('root').innerHTML = html;
+            });
+        } else if (result.message === 'cannot edit payed order') {
+            failMessage.style.color = 'red';
+            failMessage.textContent = 'ההזמנה כבר שולמה ולכן לא ניתן לערוך אותה'
+        } else {
+            failMessage.style.color = 'red';
+            failMessage.textContent = 'משהו השתבש, נסה שוב מאוחר יותר';
+        }
+
+
+    }catch(error) {
+        console.error('Error fetching order', error);
+    }
+}

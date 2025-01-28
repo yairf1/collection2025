@@ -2,11 +2,16 @@ let form = document.getElementById('registerForm');
 let failTry = document.getElementById('failMessage');
 let loadingSpinners = document.getElementById('loadingSpinners');
 let deleteModal = document.getElementById('deleteModal');
+let orders = [];
 
 document.addEventListener('DOMContentLoaded', () => {
   const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
   tooltipTriggerList.map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 });
+
+App().then((html => {
+  document.getElementById('root').innerHTML = html;
+}))
 
 if (deleteModal) {
   deleteModal.addEventListener('show.bs.modal', event => {
@@ -81,10 +86,6 @@ document.getElementById('searchInput').addEventListener('input', () => {
   }
 });
 
-let orders = [];
-App().then((html => {
-  document.getElementById('root').innerHTML = html;
-}))
 
 async function App() {
   

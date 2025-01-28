@@ -11,7 +11,7 @@ form.addEventListener('submit', async(event) => {
             method:'Post',
             Credential:'include',
             headers:{'Content-Type': 'application/x-www-form-urlencoded'},
-            body:`name=${name}&password=${password}`
+            body:`name=${name.trim()}&password=${password}`
         })
         .then(response=>response.json())
         .then(data=>{
