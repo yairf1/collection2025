@@ -131,6 +131,7 @@ router.post(
           products: [{ productName, price, color, size, quantity }],
           totalPrice: price * quantity,
           customerName: req.user.name,
+          orderId: '',
         });
         return res.json({ message: 'product added to cart successfully' });
       }

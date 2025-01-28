@@ -73,9 +73,15 @@ document.getElementById('searchInput').addEventListener('input', () => {
       return;
   }
 
-  const filteredOrders = orders.filter(order =>
-      order.customerName.includes(query) || order.orderId.includes(query)
-  );
+  const filteredOrders = orders.filter(order => {
+    const customerNameMatch = order.customerName.trim().toLowerCase().includes(query.trim().toLowerCase());
+    const orderIdMatch = order.orderId && order.orderId ? order.orderId.includes(query.trim()) : 'not confirmed'.includes(query.trim());
+    
+    
+    return customerNameMatch || orderIdMatch;
+  });
+  
+  
 
   if (filteredOrders.length === 0) {
       root.innerHTML = '<h3 class="text-center text-warning">לא נמצאו הזמנות</h3>';
@@ -121,49 +127,51 @@ async function primeCard(order) {
 
   return `
     <div class="card shadow-sm mb-3 col-12" id="order-${order.orderId}">
-      <div class="card-body d-flex justify-content-between align-items-center" dir="rtl">
-        <div class="text-right">
-          <h4 class="text-primary d-inline ms-2"> הזמנה מספר:</h4> 
-          <span class="text-secondary d-inline" id="orderId" dir="ltr" style="font-weight: bold;">${order.orderId ? order.orderId : 'not confirmed'}</span>
-        </div>
-        <div class="text-center">
-          <div class="text-secondary" id="costumerNameDiv">${order.customerName}</div>
-          <div class="text-secondary" id="totalPriceDiv">${order.totalPrice} ש"ח</div>
-          <div class="" id="isPayedDiv" style="color:${order.isPayed ? 'green' : 'red'}">
-            ${order.isPayed ? 'הזמנה שולמה' : 'הזמנה לא שולמה'}
+      <div class="card-body d-flex flex-column justify-content-center" dir="rtl">
+        <div class="d-flex flex-wrap align-items-center justify-content-start mb-3">
+          <div class="text-right me-3">
+            <h4 class="text-primary d-inline ms-2">הזמנה מספר:</h4>
+            <span class="text-secondary d-inline" id="orderId" dir="ltr" style="font-weight: bold;">${order.orderId ? order.orderId : 'not confirmed'}</span>
           </div>
-          <div class="" id="isReadyDiv" style="color:${order.isReady ? 'green' : 'red'}">
-            ${order.isReady ? 'הזמנה מוכנה' : 'הזמנה לא מוכנה'}
+
+          <div class="d-flex flex-wrap align-items-center">
+            <div class="text-secondary me-3" id="customerNameDiv">${order.customerName}</div>
+            <div class="text-secondary me-3" id="totalPriceDiv">${order.totalPrice} ש"ח</div>
+            <div class="me-3" id="isPayedDiv" style="color:${order.isPayed ? 'green' : 'red'}">
+              ${order.isPayed ? 'הזמנה שולמה' : 'הזמנה לא שולמה'}
+            </div>
+            <div class="me-3" id="isReadyDiv" style="color:${order.isReady ? 'green' : 'red'}">
+              ${order.isReady ? 'הזמנה מוכנה' : 'הזמנה לא מוכנה'}
+            </div>
           </div>
         </div>
-        <div class="d-flex">
+        
+        <div class="d-flex flex-row justify-content-start">
           <button type="button" class="btn btn-danger me-1 ms-2" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-order='${order._id}' data-bs-toggle="tooltip" data-bs-placement="top" title="מחק הזמנה">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
               <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
               <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
             </svg>
           </button>
-
           <button type="button" class="btn btn-secondary me-1 ms-2" id="toggleButton${order._id}" onclick="showDetails('${order._id}')" data-bs-toggle="tooltip" data-bs-placement="top" title="הצג / הסתר פרטים">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
               <path d="M3.204 5h9.592L8 10.481zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659"/>
             </svg>
           </button>
-
           <button type="button" class="btn btn-warning me-1 ms-2" onclick="markPaid('${order._id}')" data-bs-toggle="tooltip" data-bs-placement="top" title="בטל סימון / סמן הזמנה כשולמה">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-dollar" viewBox="0 0 16 16">
               <path d="M4 10.781c.148 1.667 1.513 2.85 3.591 3.003V15h1.043v-1.216c2.27-.179 3.678-1.438 3.678-3.3 0-1.59-.947-2.51-2.956-3.028l-.722-.187V3.467c1.122.11 1.879.714 2.07 1.616h1.47c-.166-1.6-1.54-2.748-3.54-2.875V1H7.591v1.233c-1.939.23-3.27 1.472-3.27 3.156 0 1.454.966 2.483 2.661 2.917l.61.162v4.031c-1.149-.17-1.94-.8-2.131-1.718zm3.391-3.836c-1.043-.263-1.6-.825-1.6-1.616 0-.944.704-1.641 1.8-1.828v3.495l-.2-.05zm1.591 1.872c1.287.323 1.852.859 1.852 1.769 0 1.097-.826 1.828-2.2 1.939V8.73z"/>
             </svg>
-
+          </button>
           <button type="button" class="btn btn-success me-1 ms-2" onclick="markReady('${order._id}')" ${ !order.isPayed ? 'disabled' : ''} data-bs-toggle="tooltip" data-bs-placement="top" title="בטל סימון / סמן הזמנה כמוכנה">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
               <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
             </svg>
           </button>
-
-          </button>
         </div>
       </div>
+
+      <!-- Products Container -->
       <div id="products-${order._id}" class="products-container" style="display: none;">
         ${productCards.join('')}
       </div>
