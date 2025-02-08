@@ -22,10 +22,12 @@ form.addEventListener('submit', async(event) => {
                 body:`name=${name.trim()}&password=${password}&clas=${clas}&phone=${phone}&email=${email}`
             })
             .then(async (response) => {
-                const data = await response.json()
+                const data = await response.json();
                 loadingSpinners.style.display = 'none';
                 if (data.message == 'user created successfully') {
                     window.location.href = '/login'
+                } else if (data.message == 'Username is required and must be unique') {
+                    failTry.textContent = 'שם משתמש תפוס, בחר שם אחר';
                 } else {
                     failTry.textContent = 'קרתה שגיאה, נסה שם משתמש אחר ואם הבעיה לא נפתרת נסה שוב מאוחר יותר';
                 }

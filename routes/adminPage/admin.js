@@ -17,34 +17,23 @@ router.use('/', authenticateToken, async (req, res, next) => {
 });
 
 router.get('/',(req,res) => {
-    const file = path.join(__dirname + '../../../public/adminPage/admin.html');
+    const file = path.join(__dirname + '../../../public/adminPage/temp.html'); //====need to change to admin.html====
     res.sendFile(file);
 });
 
-router.post('/createProduct', async(req,res) => {
-    const {name, colors, price, sizes, type} = req.body;
-    if (name && colors && price && sizes && type){
-        try{
-            await products.create({productName: name, colors: colors.split(',').map(item => item.trim()), price: price, sizes: sizes.split(',').map(item => item.trim()), img: `../img/${name}.jpg`, type: type});
-            return res.send('product created successfully');
-        }
-        catch(err){
-            console.error(err);
-            return res.send('something went wrong, try again');
-        }
-    }
-});
-
-router.post('/getAllOrders', async (req, res) => {
+router.get('/getAll', async (req, res) => {
+    const toGet = req.query.toGet;
     try {
-        let order = await orders.find();
-        if(!order) {return res.json({message: 'order not found'})}
-        res.json(order);
+        let list = await (toGet === 'orders' ? orders : toGet === 'users' ? users : products).find();
+        if(!list) {return res.json({message: 'object not found'})}
+        res.json(list);
     } catch (error) {
         console.error(error);
         res.json({message: 'error'});
     }
 })
+
+//orders
 
 router.post('/deleteOrder', async (req, res) => {
     const {orderId} = req.body;
@@ -90,5 +79,23 @@ router.post('/markReady', async (req, res) => {
         res.json({message: 'error'});
     }
 })
+
+//products
+
+router.post('/createProduct', async(req,res) => {
+    const {name, colors, price, sizes, type} = req.body;
+    if (name && colors && price && sizes && type){
+        try{
+            await products.create({productName: name, colors: colors.split(',').map(item => item.trim()), price: price, sizes: sizes.split(',').map(item => item.trim()), img: `../img/${name}.jpg`, type: type});
+            return res.send('product created successfully');
+        }
+        catch(err){
+            console.error(err);
+            return res.send('something went wrong, try again');
+        }
+    }
+});
+
+//users
 
 module.exports = router;

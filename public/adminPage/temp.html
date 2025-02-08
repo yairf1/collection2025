@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="he">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <title>ממשק ניהול</title>
+        <script>
+            $(function(){
+                $("#header").load('../header/header.html');
+            })
+        </script>
+    </head>
+    <body>
+        <div id="header"></div>
+        <div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">              
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">מחיקת הזמנה</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>?האם אתה בטוח שברצונך למחוק את ההזמנה</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="buttonfalse">סגור</button>
+                        <form action="/admin/deleteOrder" method="POST" onsubmit="onSubmit(event)">
+                            <input type="hidden" id="orderId" name="orderId">
+                            <button type="submit" class="btn btn-danger" data-bs-dismiss="modal" id="buttonTrue">מחק הזמנה</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container text-center text-primary col-md-6 p-1"><div class="col md-6 p-1"><h1>ממשק ניהול</h1></div></div>
+        <div class="row justify-content-center">
+            <div class="w-75 border border-3 border-secondary rounded-3 p-3 border-opacity-25">
+                <nav>
+                <div class="nav nav-tabs nav-fill mb-2" id="nav-tab" role="tablist">
+                    <button class="nav-link active" id="nav-orders-tab" data-bs-toggle="tab" data-bs-target="#nav-orders" type="button" role="tab" aria-controls="nav-orders" aria-selected="true">הזמנות</button>
+                    <button class="nav-link" id="nav-users-tab" data-bs-toggle="tab" data-bs-target="#nav-users" type="button" role="tab" aria-controls="nav-users" aria-selected="false">משתמשים</button>
+                    <button class="nav-link" id="nav-products-tab" data-bs-toggle="tab" data-bs-target="#nav-products" type="button" role="tab" aria-controls="nav-products" aria-selected="false">מוצרים</button>
+                </div>
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+
+                    <!--  orders  -->
+                    <div class="tab-pane fade show active justify-content-center text-center" id="nav-orders" role="tabpanel" aria-labelledby="nav-orders-tab" tabindex="0">
+                        <div class="col-md-10 justify-content-center mx-auto">
+                        
+                            <div class="row justify-content-center mt-3" >
+                                <div class="row text-center"><h3 class="text-primary">ניהול הזמנות</h3></div>
+                                <div class="input-group my-3">
+                                    <input
+                                    type="text"
+                                    id="ordersSearchInput"
+                                    class="form-control"
+                                    placeholder="חפש לפי שם לקוח או מספר הזמנה"
+                                    aria-label="חיפוש"
+                                    aria-describedby="ordersSearchButton"
+                                    />
+                                    <button class="btn btn-info" id="ordersSearchButton">חפש</button>
+                                    <button disabled class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas" aria-controls="staticBackdrop">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel" viewBox="0 0 16 16">
+                                            <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="row card shadow-sm mb-3"><div class="card-body col-12" id="ordersRoot"><h3 class="text-center text-info">חפש הזמנה לפי שם לקוח או מספר הזמנה</h3></div></div>
+                            </div>
+
+                        </div>
+                        <div class="container text-container justify-content-center" id="ordersFailMessage" style="display: none;"></div>
+                    </div>
+
+                    <!--  users  -->
+                    <div class="tab-pane fade justify-content-center text-center" id="nav-users" role="tabpanel" aria-labelledby="nav-users-tab" tabindex="0">
+                        <div class="col-md-10 justify-content-center mx-auto">
+                            <div class="row justify-content-center mt-3" >
+                                <div class="row text-center"><h3 class="text-primary">ניהול משתמשים</h3></div>
+                                <div class="input-group my-3">
+                                    <input
+                                    type="text"
+                                    id="usersSearchInput"
+                                    class="form-control"
+                                    placeholder="חפש לפי שם משתמש, טלפון, או אימייל"
+                                    aria-label="חיפוש"
+                                    aria-describedby="usersSearchButton"
+                                    />
+                                    <button class="btn btn-info" id="usersSearchButton">חפש</button>
+                                    <button disabled class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas" aria-controls="staticBackdrop">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel" viewBox="0 0 16 16">
+                                            <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="row card shadow-sm mb-3"><div class="card-body col-12" id="usersRoot">
+                                    <div class="card shadow-sm mb-3 col-12" id="user-${user._id}">
+                                        <div class="card-body d-flex flex-row justify-content-between" dir="rtl">
+                                
+                                            <div class="d-flex align-items-start justify-content-start">
+                                                <div class="text-secondary me-3" id="userNameDiv">${user.name}</div>
+                                                <div class="text-secondary me-3" id="clasDIv">${user.class}</div>
+                                                <div class="text-secondary me-3" id="phoneDiv">${user.phone}</div>
+                                                <div class="text-secondary me-3" id="emailDiv">${user.email}</div>
+                                            </div>
+                                        
+                                            <div class="d-flex align-items-end justify-content-end">
+                                                <button type="button" class="btn btn-danger me-1 ms-2" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-object="user" data-bs-to-delete='${user._id}' data-bs-toggle="tooltip" data-bs-placement="top" title="מחק משתמש">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                                        <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container text-container justify-content-center" id="usersFailMessage"></div>
+                    </div>
+
+                    <!--  products  -->
+                    <div class="tab-pane fade justify-content-center text-center" id="nav-products" role="tabpanel" aria-labelledby="nav-products-tab" tabindex="0">
+                        <div class="col-md-10 justify-content-center mx-auto">
+                            <div class="row justify-content-center mt-3" >
+                                <div class="row text-center"><h3 class="text-primary">ניהול מוצרים</h3></div>
+                                <div class="input-group my-3">
+                                    <input
+                                    type="text"
+                                    id="productsSearchInput"
+                                    class="form-control"
+                                    placeholder="חפש לפי שם או סוג מוצר"
+                                    aria-label="חיפוש"
+                                    aria-describedby="productsSearchButton"
+                                    />
+                                    <button class="btn btn-info" id="productsSearchButton">חפש</button>
+                                    <button disabled class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas" aria-controls="staticBackdrop">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel" viewBox="0 0 16 16">
+                                            <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="row card shadow-sm mb-3"><div class="card-body col-12" id="productsRoot">
+                                    <div class="card shadow-sm mb-3 col-12" id="product-${product._id}">
+                                        <div class="card-body d-flex flex-row justify-content-between" dir="rtl">
+                                
+                                            <div class="d-flex align-items-start justify-content-start">
+                                                <div class="text-secondary me-3" id="productNameDiv">${product.productName}</div>
+                                                <div class="text-secondary me-3" id="priceDIv">${product.price}</div>
+                                                <div class="text-secondary me-3" id="typeDiv">${product.type}</div>
+                                                <div class="text-secondary me-3" id="emailDiv">${user.email}</div>
+                                            </div>
+                                        
+                                            <div class="d-flex align-items-end justify-content-end">
+                                                <button type="button" class="btn btn-danger me-1 ms-2" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-object="user" data-bs-to-delete='${user._id}' data-bs-toggle="tooltip" data-bs-placement="top" title="מחק משתמש">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                                        <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="container text-container justify-content-center" id="productsFailMessage"></div>
+                            <div id="addProductDiv" class="w-75 border border-3 border-secondary rounded-3 p-3 border-opacity-25 secondary-bg">
+                                <form id="addProductForm">
+                                    <input type="text" class="form-control mb-3 bg-light text-end " id="name" placeholder="שם מוצר" required>
+                                    <input type="text" class="form-control mb-3 bg-light text-end" id="colors" placeholder="צבעים">
+                                    <input type="text" class="form-control mb-3 bg-light text-end" id="price" placeholder="מחיר" required>
+                                    <input type="text" class="form-control mb-3 bg-light text-end" id="sizes" placeholder="מידות">
+                                    <select class="form-select mb-3 bg-light text-end" aria-label="Default select example" id="type">
+                                        <option disabled selected >:סוג מוצר</option>
+                                        <option value="shirt">חולצה</option>
+                                        <option value="sweater">סוודר</option>
+                                        <option value="tank top">גופייה</option>
+                                        <option value="pants">מכנסיים</option>
+                                        <option value="other">שונות</option>
+                                    </select>
+                                    <input type="submit" class="btn btn-primary" id="submit">
+                                    <div id="loadingSpinners" class="spinner-border text-info" role="status" style="display: none;">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="../adminPage/temp.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    </body>
+</html>
