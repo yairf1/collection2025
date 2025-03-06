@@ -22,12 +22,16 @@
         <div class="row justify-content-center">
             <div class="border-bottom border-opacity-25 m-1 w-50"></div>
         </div>
-        <div class="row justify-content-center ">
+        <div class="row justify-content-center">
             <div id="registerDiv" class="w-75 border border-3 border-secondary rounded-3 p-3 border-opacity-25 secondary-bg">
-                <form id="registerForm">
+                <form id="registerForm" class="text-end">
+                    <label for="name" class="form-label mb-1">שם מלא</label>
                     <input type="text" class="form-control mb-3 bg-light text-end " id="name" placeholder="שם מלא" required>
+                    <label for="password" class="form-label mb-1">סיסמה</label>
                     <input type="password" class="form-control mb-3 bg-light text-end" id="password" placeholder="סיסמה" required>
+                    <label for="confirmPassword" class="form-label mb-1">אישור סיסמה</label>
                     <input type="password" class="form-control mb-3 bg-light text-end" id="confirmPassword" placeholder="אשר סיסמה" required>
+                    <label for="class" class="form-label mb-1">בחירת שכבה</label>
                     <select class="form-select mb-3 bg-light text-end" aria-label="Default select example" id="class" required>
                         <option disabled selected >:אנא סמן את השכבה שבה אתה לומד</option>
                         <option value=7>ז</option>
@@ -38,7 +42,9 @@
                         <option value=12>יב</option>
                         <option value=13>צוות</option>
                     </select>
-                    <input type="text" class="form-control mb-3 bg-light text-end" id="phone" placeholder="מספר טלפון" required>
+                    <label for="phone" class="form-label mb-1">טלפון</label>
+                    <input type="text" class="form-control mb-3 bg-light text-end" id="phone" placeholder="הכנס מספר טלפון ללא רווחים או מקף (-) בין המספרים" required>
+                    <label for="email" class="form-label mb-1">אימייל</label>
                     <input type="email" class="form-control mb-4 bg-light text-end" id="email" placeholder="כתובת אימייל" required>
                     <input type="submit" class="btn btn-primary" id="submit">
                     <div id="loadingSpinners" class="spinner-border text-info" role="status" style="display: none;">

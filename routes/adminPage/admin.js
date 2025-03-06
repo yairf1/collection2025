@@ -8,6 +8,11 @@ const authenticateToken = require('../middleware/checkAuth');
 const router = Router();
 
 router.use('/', authenticateToken, async (req, res, next) => {
+    if (req.isAuthenticated) {
+        next();
+    } else {
+      return res.redirect('/error');
+    }
     const user = await users.findOne({name: req.user.name}); 
     if (user && user.isAdmin){
         next();

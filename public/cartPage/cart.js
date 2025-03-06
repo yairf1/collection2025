@@ -55,40 +55,55 @@ function validatePositivity(event){
 }
 
 async function App() {
-    let order;
     let counter = -1;
+    let order;
     async function fetchOrder() {
-      try {
-        const response = await fetch('/cart/getUserOrder', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-        order = await response.json();
-      } catch (error) {
-        console.error('Error fetching order', error);
-      }
+        try {
+            await fetch('/cart/getUserOrder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }).then(async(res) => order = await res.json());
+        } catch (error) {
+            console.error('Error fetching order', error);
+        }
     }
-    
     await fetchOrder();
-    if (order.message === 'order not found' || order.products.length == 0 || order.isConfirmed) {
-        confirmOrderButton.style.display = 'none';
-        removeOrderButton.style.display = 'none';
-        totalPriceDiv.style.display = 'none';
-        return `<h3 class="text-center"> אין הזמנה פעילה, אתה יכול להזמין מוצרים בדף הבית, או לבדוק הזמנה קיימת במעקב הזמנות</h3>`;
+    console.log(order);
+    if (order.message === 'user not logged in') {
+        try {
+            order = {products: JSON.parse(localStorage.getItem('cart')) || [], totalPrice: JSON.parse(localStorage.getItem('totalPrice')) || 0};
+        } catch (error) {
+            console.error(error);
+        }
+    } else {
+
+        if (order.message === 'order not found' || order.products.length == 0 || order.isConfirmed) {
+            confirmOrderButton.style.display = 'none';
+            removeOrderButton.style.display = 'none';
+            totalPriceDiv.style.display = 'none';
+            return `<h3 class="text-center"> אין הזמנה פעילה, אתה יכול להזמין מוצרים בדף הבית, או לבדוק הזמנה קיימת במעקב הזמנות</h3>`;
+        }
+        removeOrderButton.style.display = 'block';
+        totalPriceDiv.style.display = 'block';
+        totalPriceDiv.textContent = `סך הכל: ${order.totalPrice} ש"ח`;
+        if (order.isConfirmed){
+            confirmOrderButton.style.display = 'none';
+            confirmationMessage.textContent = 'ההזמנה אושרה, מספר ההזמנה שלך הוא:' + order.orderId;
+            confirmationMessage.style.display = 'block';
+        }else{
+            confirmOrderButton.style.display = 'block';
+            confirmationMessage.style.display = 'none';
+        }   
     }
-    removeOrderButton.style.display = 'block';
-    totalPriceDiv.style.display = 'block';
-    totalPriceDiv.textContent = `סך הכל: ${order.totalPrice} ש"ח`;
-    if (order.isConfirmed){
-        confirmOrderButton.style.display = 'none';
-        confirmationMessage.textContent = 'ההזמנה אושרה, מספר ההזמנה שלך הוא:' + order.orderId;
-        confirmationMessage.style.display = 'block';
-    }else{
-        confirmOrderButton.style.display = 'block';
-        confirmationMessage.style.display = 'none';
-    }   
+
+    if (isLogged()) {
+        confirmOrderButton.removeAttribute('disabled');
+        confirmOrderButton.removeAttribute('data-bs-toggle');
+        confirmOrderButton.removeAttribute('data-bs-placment');
+        confirmOrderButton.removeAttribute('title');
+    }
 
     const productCards = await Promise.all(order.products.map(async (product) => {
         counter++;
@@ -174,14 +189,23 @@ async function onSubmit(event){
 async function deleteProduct(index) {
     try {
         const response = await fetch('/cart/removeProduct', {
-          method: 'POST',
+          method: 'DELETE',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
           body: `index=${index}`,
         });
         result = await response.json();
-        if (result.message === 'order updated') {
+        if (result.message === 'user not logged in') {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            if (index < 0 || index >= cart.length) {
+                failMessage.style.color = 'red';
+                failMessage.textContent = 'משהו השתבש, נסה שוב מאוחר יותר';
+            }
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            localStorage.setItem('totalPrice', cart.map(product => product.price * product.quantity));
+        } else if (result.message === 'order updated') {
             failMessage.style.color = 'green';
             failMessage.textContent = 'ההזמנה עודכנה בהצלחה'
         } 
@@ -194,6 +218,21 @@ async function deleteProduct(index) {
         });
     }catch(error) {
         console.error('Error fetching order', error);
+    }
+}
+
+async function isLogged() {
+    try {
+      const response = await fetch('/checkAuth', {
+        method: 'GET',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      });
+      const text = await response.text();
+      return text === 'user logged' ? true : false;
+    } catch (error) {
+      console.error(error);
+      return false;
     }
 }
 

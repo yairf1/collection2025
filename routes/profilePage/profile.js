@@ -15,8 +15,12 @@ router.use(bodyParser.json());
 router.use(authenticateToken);
 
 router.get('/', (req,res) => {
-    const file = path.join(__dirname + '../../../public/profilePage/profile.html')
-    res.sendFile(file);
+    if (req.isAuthenticated) {
+        const file = path.join(__dirname + '../../../public/profilePage/profile.html')
+        res.sendFile(file);
+    } else {
+      res.redirect('/error');
+    }
 })
 
 router.get('/getUserDetails', async (req, res) => {

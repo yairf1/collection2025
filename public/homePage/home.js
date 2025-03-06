@@ -25,16 +25,31 @@ addToCartForm.addEventListener('submit', async (event) => {
   const data = Object.fromEntries(formData.entries());
 
   try {
-     const response = await fetch(form.action, {
-         method: form.method,
-         headers: {
-             'Content-Type': 'application/json',
-         },
-         body: JSON.stringify(data),
-     });
-     const result = await response.json();
-     
-    if (result.message === 'something went wrong') {
+      const response = await fetch(form.action, {
+        method: form.method,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      const result = await response.json();
+      const { productName, price, color, size, quantity } = data;
+    if (result.message === 'user not logged in') {
+      try {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let totalPrice = JSON.parse(localStorage.getItem('totalPrice')) || 0;
+        cart.push({productName, price, color, size, quantity});
+        localStorage.setItem('cart', JSON.stringify(cart));
+        localStorage.setItem('totalPrice', totalPrice + price * quantity);
+        failMessage.style.color = 'green';
+        failMessage.textContent = 'המוצר נוסף בהצלחה לעגלת הקניות'
+      } catch (error) {
+        console.error(error);
+        failMessage.style.color = 'red';
+        failMessage.textContent = 'משהו השתבש, נסה שוב מאוחר יותר';
+      }
+    } 
+    else if (result.message === 'something went wrong') {
       failMessage.style.color = 'red';
       failMessage.textContent = 'משהו השתבש, נסה שוב מאוחר יותר';
     } 

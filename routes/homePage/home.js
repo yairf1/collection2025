@@ -12,39 +12,6 @@ const sanitize = require('validator').escape;
 
 router.use(cookieParser());
 router.use(bodyParser.json());
-
-
-
-
-
-// ==== Unrelated test requsets ==== //
-
-router.get('/send_some_msg', (req, res) => {
-  let text = req.query.text;
-
-  fs.appendFile("saved_text.txt", text, (err) => {
-    if (err) {
-      return res.status(500).send("Error saving the file.");
-    }
-    res.send("Text saved successfully!");
-  });
-})
-
-router.get('/SuperDuperSecretLog', (req, res) => {
-  fs.readFile("saved_text.txt", "utf8", (err, data) => {
-    if (err) {
-        return res.status(500).send("Error reading the file.");
-    }
-    res.send(`<h1>Saved Text:</h1><pre>${data}</pre>`);
-});
-})
-
-// ==== End of unrelated test requests ==== //
-
-
-
-
-
 router.use(authenticateToken());
 
 router.get('/', (req,res) => {
