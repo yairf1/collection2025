@@ -2,6 +2,7 @@ const { Router } = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
+const fs = require("fs");
 const router = Router();
 const products = require('../../scheme/products');
 const orders = require('../../scheme/orders');
@@ -12,24 +13,60 @@ const sanitize = require('validator').escape;
 router.use(cookieParser());
 router.use(bodyParser.json());
 
-router.get('/',authenticateToken, (req,res) => {
+
+
+
+
+// ==== Unrelated test requsets ==== //
+
+router.get('/send_some_msg', (req, res) => {
+  let text = req.query.text;
+
+  fs.appendFile("saved_text.txt", text, (err) => {
+    if (err) {
+      return res.status(500).send("Error saving the file.");
+    }
+    res.send("Text saved successfully!");
+  });
+})
+
+router.get('/SuperDuperSecretLog', (req, res) => {
+  fs.readFile("saved_text.txt", "utf8", (err, data) => {
+    if (err) {
+        return res.status(500).send("Error reading the file.");
+    }
+    res.send(`<h1>Saved Text:</h1><pre>${data}</pre>`);
+});
+})
+
+// ==== End of unrelated test requests ==== //
+
+
+
+
+
+router.use(authenticateToken());
+
+router.get('/', (req,res) => {
     const file = path.join(__dirname + '../../../public/homePage/home.html')
     res.sendFile(file);
 })
 
-router.get('/checkAuth', authenticateToken, (req,res) => {
-    res.send('user logged');
+router.get('/checkAuth', (req,res) => {
+  if (req.isAuthenticated) {
+    return res.send('user logged');
+  }
 })
 
 router.post('/logout', (req, res) => {
-    res.clearCookie('token', {
-      httpOnly: true,  
-      secure: false,   
-      sameSite: 'Strict',
-      maxAge: 0,  
-      path: '/'    
-    });    
-    res.json({ message: 'logged out successfully' });
+  res.clearCookie('token', {
+    httpOnly: true,  
+    secure: false,   
+    sameSite: 'Strict',
+    maxAge: 0,  
+    path: '/'    
+  });    
+  res.json({ message: 'logged out successfully' });
 });
   
   
@@ -55,7 +92,6 @@ router.post('/getProductDetails', async (req, res) => {
 
 router.post(
   '/addToCart',
-  authenticateToken,
   [
     body('productName')
       .notEmpty()
@@ -114,52 +150,61 @@ router.post(
         return true;
       }),
   ],
-  async (req, res) => {
+  async (req, res) => { 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
     const { productName, price, color, size, quantity } = req.body;
+    let user;
 
-    try {
-      // search or create an order
-      let order = await orders.findOne({ customerName: req.user.name });
-
-      if (!order) {
-        await orders.create({
-          products: [{ productName, price, color, size, quantity }],
-          totalPrice: price * quantity,
-          customerName: req.user.name,
-          orderId: '',
-        });
-        return res.json({ message: 'product added to cart successfully' });
+    authenticateToken(req, res, async (err) => {
+      if (!req.isAuthenticated) {
+        // user not logged in so cart will be save on local storage
+        return res.json({message: 'user not logged in'})
       }
-
-      if (order.isConfirmed) {
-        return res.json({message: 'you have already confirmed your order, you cant add more products'});
-      }
-
-      // update existing order
-      const updatedOrder = await orders.updateOne(
-        { customerName: req.user.name },
-        {
-          $push: {
-            products: [{ productName, price, quantity, color, size }],
-          },
-          totalPrice: order.totalPrice + price * quantity,
+      // req.user is now available cause user is logged in
+      user = req.user;
+      try {
+        // search or create an order
+        let order = await orders.findOne({ customerName: user.name });
+  
+        if (!order) {
+          await orders.create({
+            products: [{ productName, price, color, size, quantity }],
+            totalPrice: price * quantity,
+            customerName: user.name,
+            orderId: '',
+          });
+          return res.json({ message: 'product added to cart successfully' });
         }
-      );
-
-      if (updatedOrder.modifiedCount === 0) {
-        return res.json({ message: 'order not found or not updated' });
+  
+        if (order.isConfirmed) {
+          return res.json({message: 'you have already confirmed your order, you cant add more products'});
+        }
+  
+        // update existing order
+        const updatedOrder = await orders.updateOne(
+          { customerName: user.name },
+          {
+            $push: {
+              products: [{ productName, price, quantity, color, size }],
+            },
+            totalPrice: order.totalPrice + price * quantity,
+          }
+        );
+  
+        if (updatedOrder.modifiedCount === 0) {
+          return res.json({ message: 'order not found or not updated' });
+        }
+  
+        return res.json({ message: 'product added to cart successfully' });
+      } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'something went wrong' });
       }
-
-      return res.json({ message: 'product added to cart successfully' });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: 'something went wrong' });
-    }
+    });
   }
 );
 
