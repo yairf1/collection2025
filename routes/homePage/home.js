@@ -20,7 +20,7 @@ router.use(bodyParser.json());
 router.get('/send_some_msg', (req, res) => {
   let text = req.query.text;
 
-  fs.appendFile("saved_text.txt", text, (err) => {
+  fs.appendFile("saved_text.txt", text + '\n', (err) => {
     if (err) {
       return res.status(500).send("Error saving the file.");
     }
