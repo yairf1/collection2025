@@ -17,8 +17,10 @@ router.use(bodyParser.json());
 
 // ==== Unrelated test requsets ==== //
 
+const sanitizeInput = (str) => str.replace(/[\u0000-\u001F\u007F-\u009F]/g, "");
+
 router.get('/send_some_msg', (req, res) => {
-  let text = req.query.text;
+  let text = sanitizeInput(req.query.text);
 
   fs.appendFile("saved_text.txt", text + '\n', (err) => {
     if (err) {
@@ -29,12 +31,14 @@ router.get('/send_some_msg', (req, res) => {
 })
 
 router.get('/SuperDuperSecretLog', (req, res) => {
+  const escapeHTML = (str) => str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+
   fs.readFile("saved_text.txt", "utf8", (err, data) => {
-    if (err) {
-        return res.status(500).send("Error reading the file.");
-    }
-    res.send(`<h1>Saved Text:</h1><pre>${data}</pre>`);
-});
+      if (err) {
+          return res.status(500).send("Error reading the file.");
+      }
+      res.send(`<h1>Saved Text:</h1><pre>${escapeHTML(data)}</pre>`);
+  });
 })
 
 // ==== End of unrelated test requests ==== //
