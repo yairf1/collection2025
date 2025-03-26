@@ -17,10 +17,8 @@ router.use(bodyParser.json());
 
 // ==== Unrelated test requsets ==== //
 
-const sanitizeInput = (str) => str.replace(/[\u0000-\u001F\u007F-\u009F]/g, "");
-
 router.get('/send_some_msg', (req, res) => {
-  let text = sanitizeInput(req.query.text);
+  let text = req.query.text;
 
   fs.appendFile("saved_text.txt", text + '\n', (err) => {
     if (err) {
